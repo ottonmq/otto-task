@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTTO-TASK | EDIT_SYSTEM</title>
+    <style>
+        :root {
+            --otto-cian: #00fbff;
+            --dark-bg: #000000;
+            --neon-red: #ff003c;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--otto-cian);
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 20px;
+        }
+
+        /* ENCABEZADO Y MODO OSCURO */
+        .otto-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            width: 90%;
+            max-width: 400px;
+        }
+
+                .dark-mode-toggle {
+            position: absolute;
+            top: 10px;
+            right: 0;
+            background: rgba(255, 255, 255, 0.15); /* Un poco más de brillo de fondo */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff; /* BLANCO PURO */
+            font-size: 1.2rem;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); /* Resplandor blanco */
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .id-badge {
+            border: 2px solid var(--otto-cian);
+            padding: 5px 20px;
+            box-shadow: 0 0 15px var(--otto-cian);
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 10px;
+            letter-spacing: 5px;
+        }
+
+        .otto-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #fff;
+            margin: 10px 0;
+            text-transform: lowercase;
+        }
+
+        /* MARCO DE EDICIÓN CON PARPADEO CIAN */
+        @keyframes cian-flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                box-shadow: 0 0 20px var(--otto-cian), inset 0 0 10px var(--otto-cian);
+                border-color: var(--otto-cian);
+            }
+            20%, 24%, 55% {
+                box-shadow: none;
+                border-color: rgba(0, 251, 255, 0.2);
+            }
+        }
+
+        .edit-frame {
+            border: 2px solid var(--otto-cian);
+            padding: 30px;
+            background: rgba(10, 10, 10, 0.95);
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            animation: cian-flicker 3s infinite;
+        }
+
+        h2 {
+            color: var(--otto-cian);
+            text-align: center;
+            border-bottom: 1px solid var(--otto-cian);
+            padding-bottom: 15px;
+            margin-top: 0;
+            text-transform: uppercase;
+        }
+
+        /* FORMULARIO */
+        form p { text-align: left; margin-bottom: 15px; }
+        
+        input, textarea {
+            width: 100%;
+            background: #111;
+            border: 1px solid var(--otto-cian);
+            color: #fff;
+            padding: 12px;
+            box-sizing: border-box;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .btn-save {
+            background: var(--otto-cian);
+            color: black;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            font-weight: bold;
+            margin-top: 20px;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--otto-cian);
+            text-transform: uppercase;
+        }
+
+        .abort-cmd {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: var(--neon-red);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #ff003c;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="otto-header">
+        <div class="dark-mode-toggle">🌙</div>
+        
+        <div class="id-badge">📱 ID: OTTO</div>
+        <div class="otto-title">otto-task</div>
+    </div>
+
+    <div class="edit-frame">
+        <h2>[ EDITAR_TAREA ]</h2>
+        
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-save">>> EJECUTAR_CAMBIOS</button>
+        </form>
+
+        <a href="{% url 'index' %}" class="abort-cmd">>> CANCELAR_OPERACION</a>
+    </div>
+<script>
+    const btn = document.querySelector('.dark-mode-toggle');
+    
+    btn.addEventListener('click', () => {
+        // Alternar clase en el cuerpo
+        document.body.classList.toggle('light-mode');
+        
+        // Cambiar el icono según el modo
+        if (document.body.classList.contains('light-mode')) {
+            btn.textContent = '☀️'; // Sol para modo claro
+            btn.style.background = 'rgba(0, 0, 0, 0.1)';
+            btn.style.color = '#000';
+        } else {
+            btn.textContent = '🌙'; // Luna para modo oscuro
+            btn.style.background = 'rgba(255, 255, 255, 0.15)';
+            btn.style.color = '#fff';
+        }
+    });
+</script>
+
+<style>
+    /* ESTILOS PARA EL MODO CLARO (LIGHT MODE) */
+    body.light-mode {
+        background-color: #e0e0e0 !important;
+        color: #000 !important;
+    }
+
+    body.light-mode .edit-frame {
+        background: white !important;
+        border-color: #008c91 !important; /* Un cian más oscuro para que se vea */
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2) !important;
+        animation: none; /* Quitamos el parpadeo en modo claro para no cansar la vista */
+    }
+
+    body.light-mode .otto-title {
+        color: #000 !important;
+    }
+
+    body.light-mode input, 
+    body.light-mode textarea {
+        background: #fff !important;
+        border-color: #008c91 !important;
+        color: #000 !important;
+    }
+
+    body.light-mode .btn-save {
+        background: #008c91 !important;
+        color: #fff !important;
+    }
+</style>
+<script>
+    const btn = document.querySelector('.dark-mode-toggle');
+    
+    btn.addEventListener('click', () => {
+        // Alternar clase en el cuerpo
+        document.body.classList.toggle('light-mode');
+        
+        // Cambiar el icono según el modo
+        if (document.body.classList.contains('light-mode')) {
+            btn.textContent = '☀️'; // Sol para modo claro
+            btn.style.background = 'rgba(0, 0, 0, 0.1)';
+            btn.style.color = '#000';
+        } else {
+            btn.textContent = '🌙'; // Luna para modo oscuro
+            btn.style.background = 'rgba(255, 255, 255, 0.15)';
+            btn.style.color = '#fff';
+        }
+    });
+</script>
+
+<style>
+    /* ESTILOS PARA EL MODO CLARO (LIGHT MODE) */
+    body.light-mode {
+        background-color: #e0e0e0 !important;
+        color: #000 !important;
+    }
+
+    body.light-mode .edit-frame {
+        background: white !important;
+        border-color: #008c91 !important; /* Un cian más oscuro para que se vea */
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2) !important;
+        animation: none; /* Quitamos el parpadeo en modo claro para no cansar la vista */
+    }
+
+    body.light-mode .otto-title {
+        color: #000 !important;
+    }
+
+    body.light-mode input, 
+    body.light-mode textarea {
+        background: #fff !important;
+        border-color: #008c91 !important;
+        color: #000 !important;
+    }
+
+    body.light-mode .btn-save {
+        background: #008c91 !important;
+        color: #fff !important;
+    }
+</style>
+
+</body>
+</html>

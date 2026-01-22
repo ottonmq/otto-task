@@ -1,0 +1,128 @@
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTTO-TASK | EDIT_SYSTEM</title>
+    <style>
+        :root {
+            --otto-cian: #00fbff;
+            --dark-bg: #000000;
+            --neon-red: #ff003c;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--otto-cian);
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column; /* Para apilar el header y el frame */
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 20px;
+        }
+
+        /* IDENTIDAD IGUAL AL INDEX */
+        .otto-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .id-badge {
+            border: 2px solid var(--otto-cian);
+            padding: 5px 20px;
+            box-shadow: 0 0 15px var(--otto-cian);
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 10px;
+            letter-spacing: 5px;
+        }
+
+        .otto-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #fff;
+            margin: 10px 0;
+            text-transform: lowercase;
+        }
+
+        /* MARCO DE EDICIÓN */
+        .edit-frame {
+            border: 1px solid var(--otto-cian);
+            padding: 30px;
+            background: rgba(10, 10, 10, 0.9);
+            box-shadow: 0 0 20px rgba(0, 251, 255, 0.2);
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        h2 {
+            color: var(--otto-cian);
+            text-align: center;
+            border-bottom: 1px solid var(--otto-cian);
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+
+        /* FORMULARIO DJANGO */
+        form p { text-align: left; margin-bottom: 15px; }
+
+        input, textarea {
+            width: 100%;
+            background: #111;
+            border: 1px solid var(--otto-cian);
+            color: #fff;
+            padding: 12px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        /* BOTÓN IGUAL AL DE AÑADIR DEL INDEX */
+        .btn-save {
+            background: var(--otto-cian);
+            color: black;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            font-weight: bold;
+            margin-top: 20px;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--otto-cian);
+        }
+
+        .abort-cmd {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: var(--neon-red);
+            text-decoration: none;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="otto-header">
+        <div class="id-badge">📱 ID: OTTO</div>
+        <div class="otto-title">otto-task</div>
+    </div>
+
+    <div class="edit-frame">
+        <h2>[ EDITAR_TAREA ]</h2>
+        
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-save">>> EJECUTAR_CAMBIOS</button>
+        </form>
+
+        <a href="{% url 'index' %}" class="abort-cmd">>> CANCELAR_OPERACION</a>
+    </div>
+
+</body>
+</html>

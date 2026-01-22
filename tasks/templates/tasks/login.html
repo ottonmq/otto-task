@@ -1,0 +1,152 @@
+
+
+
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    /* Reset de contenedor para auto-ajuste */
+    .main-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        padding: 20px;
+        background: #050505; /* Fondo negro puro */
+    }
+
+    .cyber-login-card {
+        width: 100%;
+        max-width: 400px; /* Evita que se vea gigante en PC */
+        background: rgba(10, 10, 10, 0.95);
+        border: 2px solid #00f3ff;
+        box-shadow: 0 0 20px #00f3ff, inset 0 0 10px #00f3ff;
+        padding: 30px;
+        position: relative;
+        overflow: hidden;
+        border-radius: 5px;
+    }
+
+    /* EL ESCÁNER QUE ME PEDISTE */
+    .scanner-line {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: #f0f; /* Neón Rosa */
+        box-shadow: 0 0 15px #f0f;
+        animation: scanning 4s linear infinite;
+        z-index: 100;
+    }
+
+    @keyframes scanning {
+        0% { top: 0; }
+        100% { top: 100%; }
+    }
+
+    /* Título y Logo */
+    .login-header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .login-header img {
+        width: 120px; /* Tamaño ajustado del logo de Otto-Task */
+        filter: drop-shadow(0 0 8px #00f3ff);
+        margin-bottom: 10px;
+    }
+
+    .neon-text {
+        color: #00f3ff;
+        text-shadow: 0 0 10px #00f3ff;
+        font-size: 1.1rem;
+        letter-spacing: 2px;
+    }
+
+    /* Estilo de Formulario Django */
+    form p {
+        margin-bottom: 15px;
+        color: #f0f; /* Etiquetas en rosa neón */
+    }
+
+    input[type="text"], input[type="password"] {
+        width: 100%;
+        background: #1a1a1a;
+        border: 1px solid #00f3ff;
+        padding: 12px;
+        color: #fff;
+        font-family: 'Courier New', monospace;
+        outline: none;
+    }
+
+    input:focus {
+        border-color: #f0f;
+        box-shadow: 0 0 10px #f0f;
+    }
+
+    /* Botón de Ejecución */
+    .btn-execute {
+        width: 100%;
+        padding: 15px;
+        background: transparent;
+        border: 2px solid #00f3ff;
+        color: #00f3ff;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+        text-transform: uppercase;
+        margin-top: 10px;
+    }
+
+    .btn-execute:hover {
+        background: #00f3ff;
+        color: #000;
+        box-shadow: 0 0 25px #00f3ff;
+    }
+
+    .footer-links {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 0.8rem;
+    }
+
+    .footer-links a {
+        color: #f0f;
+        text-decoration: none;
+        text-shadow: 0 0 5px #f0f;
+    }
+
+    /* Cuadro de estado parpadeante */
+    .status-box {
+        font-size: 0.7rem;
+        color: #00f3ff;
+        margin-bottom: 10px;
+    }
+
+    .blink { animation: parpadeo 1s infinite; }
+    @keyframes parpadeo { 50% { opacity: 0; } }
+</style>
+
+<div class="main-wrapper">
+    <div class="cyber-login-card">
+        <div class="scanner-line"></div>
+        
+        <div class="login-header">
+            <img src="/static/images/logo_otto.png" alt="OTTO-TASK">
+            <div class="status-box"><span class="blink">●</span> SISTEMA_LOGIN_ACTIVO</div>
+            <h2 class="neon-text">>> ACCESO_NÚCLEO</h2>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-execute">EJECUTAR_ACCESO</button>
+        </form>
+
+        <div class="footer-links">
+            ¿NUEVO USUARIO? <a href="{% url 'register' %}">[ REGISTRAR_CUENTA ]</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

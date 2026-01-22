@@ -1,0 +1,5 @@
+django
+gunicorn
+django-allauth
+whitenoise
+psycopg2-binary

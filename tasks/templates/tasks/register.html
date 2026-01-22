@@ -1,0 +1,146 @@
+
+
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    .main-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 90vh;
+        padding: 15px;
+        background: #050505; /* Fondo negro profundo */
+    }
+
+    .cyber-card {
+        width: 100%;
+        max-width: 450px; /* Ajuste para que no sea gigante */
+        background: rgba(10, 10, 10, 0.98);
+        border: 2px solid #ff00ff; /* Borde rosa neón */
+        box-shadow: 0 0 20px #ff00ff, inset 0 0 10px #ff00ff;
+        padding: 25px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* EL ESCÁNER QUE PEDISTE */
+    .scanner-line {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: #00f3ff; /* Línea de escáner cian */
+        box-shadow: 0 0 15px #00f3ff;
+        animation: scanning-process 5s linear infinite;
+        z-index: 100;
+    }
+
+    @keyframes scanning-process {
+        0% { top: 0; }
+        100% { top: 100%; }
+    }
+
+    .header-section {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .header-section img {
+        width: 100px; /* Logo Otto-Task */
+        filter: drop-shadow(0 0 8px #ff00ff);
+    }
+
+    .neon-title {
+        color: #ff00ff;
+        text-shadow: 0 0 10px #ff00ff;
+        font-size: 1.2rem;
+        margin-top: 10px;
+        text-transform: uppercase;
+    }
+
+    /* Ajuste de los formularios de Django (as_p) */
+    form p {
+        margin-bottom: 12px;
+        color: #00f3ff;
+        font-size: 0.85rem;
+    }
+
+    input {
+        width: 100%;
+        background: #111;
+        border: 1px solid #ff00ff;
+        padding: 10px;
+        color: #fff;
+        font-family: 'Courier New', monospace;
+        outline: none;
+    }
+
+    input:focus {
+        border-color: #00f3ff;
+        box-shadow: 0 0 10px #00f3ff;
+    }
+
+    /* Botón de Registro */
+    .btn-register {
+        width: 100%;
+        padding: 15px;
+        background: transparent;
+        border: 2px solid #ff00ff;
+        color: #ff00ff;
+        font-weight: bold;
+        cursor: pointer;
+        text-transform: uppercase;
+        margin-top: 15px;
+        transition: 0.3s;
+    }
+
+    .btn-register:hover {
+        background: #ff00ff;
+        color: #000;
+        box-shadow: 0 0 30px #ff00ff;
+    }
+
+    .status-indicator {
+        font-size: 0.7rem;
+        color: #ff00ff;
+        text-align: right;
+        margin-bottom: 5px;
+    }
+
+    .blink { animation: flash 1.5s infinite; }
+    @keyframes flash { 50% { opacity: 0; } }
+
+    .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: #00f3ff;
+        text-decoration: none;
+        font-size: 0.8rem;
+    }
+</style>
+
+<div class="main-wrapper">
+    <div class="cyber-card">
+        <div class="scanner-line"></div>
+        
+        <div class="header-section">
+            <img src="/static/images/logo_otto.png" alt="OTTO-TASK">
+            <div class="status-indicator"><span class="blink">●</span> REGISTRO_NODO_NUEVO</div>
+            <h2 class="neon-title">>> CREAR_USUARIO</h2>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-register">REGISTRAR_EN_NÚCLEO</button>
+        </form>
+
+        <a href="{% url 'login' %}" class="back-link">¿YA TIENES ACCESO? [ VOLVER_AL_LOGIN ]</a>
+    </div>
+</div>
+{% endblock %}
+
+
