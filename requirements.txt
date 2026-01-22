@@ -1,5 +1,9 @@
-django
+Django==6.0.1
+django-allauth==65.14.0
+djangorestframework
+dj-database-url
 gunicorn
-django-allauth
 whitenoise
-psycopg2-binary
+requests
+requests-oauthlib
+Pillow
