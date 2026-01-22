@@ -7,3 +7,4 @@ whitenoise
 requests
 requests-oauthlib
 Pillow
+psycopg2-binary==2.9.11
