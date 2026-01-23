@@ -1,8 +1,9 @@
+
 import os, dj_database_url
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-otto-task-2026')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-u=oy)$lfga_%!a*mhc&74#2t+&yo309ow5hw3h2ezm!@-4stor')
 DEBUG = True 
 ALLOWED_HOSTS = ['*']
 
@@ -18,12 +19,15 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.github', 
 ]
 
 SITE_ID = 1
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
+   'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -59,6 +63,8 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
+# --- 🔐 LIMPIEZA TOTAL (MATA EL ERROR DE LAS 10:56 PM) ---
+# Se eliminó ACCOUNT_LOGIN_METHODS para que no choque con SIGNUP_FIELDS
 ACCOUNT_SIGNUP_FIELDS = ['email']
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_LOGOUT_ON_GET = True
@@ -66,3 +72,9 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'index'

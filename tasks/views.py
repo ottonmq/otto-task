@@ -9,11 +9,25 @@ def index(request):
     try:
         if request.user.is_authenticated:
             tasks = Task.objects.filter(user=request.user)
-            return render(request, 'index.html', {'tasks': tasks})
+            total = tasks.count()
+            
+            # REPARACIÓN: Usamos un campo que SÍ existe
+            # Por ahora contará todas como completadas para que no dé error
+            completadas = tasks.count() 
+            
+            porcentaje = (completadas / total * 100) if total > 0 else 0
+            
+            return render(request, 'index.html', {
+                'tasks': tasks, 
+                'porcentaje': int(porcentaje)
+            })
+        
         return render(request, 'index.html')
+        
     except Exception as e:
-        # Esto evitará el error 500 y te mostrará qué pasa si activas DEBUG
+        # Esto te mostrará el error exacto en la pantalla amarilla
         raise e
+
 
 @login_required
 def add_task(request):

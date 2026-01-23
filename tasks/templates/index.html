@@ -541,12 +541,13 @@
 <div style="border: 1px solid #00FF41; padding: 10px; background: rgba(0, 255, 65, 0.05); margin-top: 15px; font-family: 'Courier New', monospace;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
         <span style="color: #00FF41; font-size: 10px; font-weight: bold; letter-spacing: 1px;">[PROCESAMIENTO_DE_TAREAS]</span>
-        <span style="color: #00FF41; font-size: 10px;">75%</span>
+        <span style="color: #00FF41; font-size: 10px;">{{ porcentaje }}%</span>
     </div>
     <div style="width: 100%; height: 6px; background: #1a1a1a; border: 1px solid rgba(0, 255, 65, 0.3); position: relative;">
-        <div style="width: 75%; height: 100%; background: #00FF41; box-shadow: 0 0 15px #00FF41;"></div>
+        <div style="width: {{ porcentaje }}%; height: 100%; background: #00FF41; box-shadow: 0 0 15px #00FF41; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);"></div>
     </div>
 </div>
+
 
 
 
@@ -577,7 +578,7 @@
 <div style="display: flex; flex-direction: column; gap: 10px; padding: 15px; border: 1px solid #00FF41; background: rgba(0, 255, 65, 0.05); font-family: 'Courier New', monospace;">
     <div style="display: flex; align-items: center; gap: 10px;">
         <i class="bi bi-shield-shaded" style="color: #00FF41; font-size: 16px;"></i>
-        <span style="color: #00FF41; font-weight: bold; font-size: 11px; letter-spacing: 2px;">ESTABILIDAD_V2</span>
+        <span style="color: #00FF41; font-weight: bold; font-size: 11px; letter-spacing: 2px;">ESTABILIDAD_V1.0</span>
     </div>
     <div style="font-size: 9px; color: rgba(0, 255, 65, 0.8);">
         > CORE_VERSIONS: LOCKED (Django 6.0.1)<br>
