@@ -6,12 +6,10 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SEGURIDAD
-SECRET_KEY = 'django-insecure-u=oy)$lfga_%!a*mhc&74#2t+&yo309ow5hw3h2ezm!@-4stor'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-u=oy)$lfga_%!a*mhc&74#2t+&yo309ow5hw3h2ezm!@-4stor')
 
-# DEBUG se apaga automáticamente en Render si configuras la variable de entorno
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-# Permitir todos los hosts en desarrollo, pero Render lo manejará en producción
 ALLOWED_HOSTS = ['*']
 
 # APPS INSTALADAS
@@ -24,9 +22,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     
-    'tasks',
+    'tasks', # Tu módulo de misiones
     
-    # Autenticación
+    # Autenticación Cyberpunk
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -37,10 +35,9 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
-# MIDDLEWARE (Orden crítico para seguridad y archivos estáticos)
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # Maneja el neón en la nube
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -50,7 +47,8 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
 ]
 
-ROOT_URLCONF = 'core.urls'
+# El ROOT_URLCONF debe coincidir con el nombre de tu carpeta de proyecto
+ROOT_URLCONF = 'core.urls' 
 
 TEMPLATES = [
     {
@@ -69,8 +67,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-# 🗄️ BASE DE DATOS HÍBRIDA (La clave de la V2)
-# Si Render detecta una base de datos Postgres, la usa. Si no, usa tu SQLite local.
+# 🗄️ BASE DE DATOS (PSQL en Render / SQLite en Termux)
 DATABASES = {
     'default': dj_database_url.config(
         default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
@@ -78,27 +75,18 @@ DATABASES = {
     )
 }
 
-# VALIDACIÓN DE CONTRASEÑAS
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-]
-
 # INTERNACIONALIZACIÓN
 LANGUAGE_CODE = 'es-es'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# ⚡ ARCHIVOS ESTÁTICOS (CONFIGURACIÓN ÚNICA)
+# ⚡ ARCHIVOS ESTÁTICOS (Protocolo WhiteNoise)
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-# Esto permite que Django sirva CSS/JS sin necesidad de Nginx/Apache
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# AUTENTICACIÓN
+# --- 🛰️ PROTOCOLO ALLAUTH (CORREGIDO v65.14) ---
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
@@ -106,27 +94,15 @@ AUTHENTICATION_BACKENDS = [
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+# Estos ajustes eliminan las advertencias amarillas de tus logs
+ACCOUNT_LOGIN_METHODS = {'username'} 
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
+ACCOUNT_SESSION_REMEMBER = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
 ACCOUNT_LOGOUT_ON_GET = True
-
-# CONFIGURACIÓN DE PROVEEDORES SOCIALES
-SOCIALACCOUNT_PROVIDERS = {
-    'github': {
-        'SCOPE': ['user', 'read:user', 'user:email'],
-    },
-    'facebook': {
-        'METHOD': 'oauth2',
-        'SCOPE': ['email', 'public_profile'],
-        'FIELDS': ['id', 'email', 'name', 'picture'],
-        'VERIFIED_EMAIL': False,
-        'VERSION': 'v13.0',
-    }
-}
-
-SOCIALACCOUNT_QUERY_EMAIL = True
-ACCOUNT_SESSION_REMEMBER = True
-ACCOUNT_EMAIL_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = 'username'
 
 # DEFAULT AUTO FIELD
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
