@@ -1,12 +1,15 @@
-Django==6.0.1
+Django==6.0.1ñ1
 django-allauth==65.14.0
 djangorestframework
 dj-database-url
 gunicorn
 whitenoise
-requests
+requestsw
+
+ Fh5ub
 requests-oauthlib
 Pillow
-psycopg2-binary==2.9.11
+psycopg2-binary==2.9.11a
+psycopg2-binary==2.9.11av
 PyJWT
-cryptography
+cryptographym
