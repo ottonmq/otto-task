@@ -9,7 +9,7 @@ requestsw
  Fh5ub
 requests-oauthlib
 Pillow
-psycopg2-binary==2.9.11a
-psycopg2-binary==2.9.11av
+psycopg2-binary
+
 PyJWT
 cryptographym
