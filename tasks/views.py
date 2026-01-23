@@ -6,10 +6,14 @@ from .models import Task
 from .forms import TaskForm 
 
 def index(request):
-    if request.user.is_authenticated:
-        tasks = Task.objects.filter(user=request.user)
-        return render(request, 'index.html', {'tasks': tasks})
-    return render(request, 'index.html')
+    try:
+        if request.user.is_authenticated:
+            tasks = Task.objects.filter(user=request.user)
+            return render(request, 'index.html', {'tasks': tasks})
+        return render(request, 'index.html')
+    except Exception as e:
+        # Esto evitará el error 500 y te mostrará qué pasa si activas DEBUG
+        raise e
 
 @login_required
 def add_task(request):
