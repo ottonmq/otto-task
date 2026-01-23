@@ -1,18 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.forms import UserCreationForm
 from .models import Task 
 from .forms import TaskForm 
 
-# --- 🛰️ VISTA PRINCIPAL (ELIMINADO EL ERROR 500) ---
 def index(request):
     if request.user.is_authenticated:
         tasks = Task.objects.filter(user=request.user)
-        # QUITAMOS EL 'tasks/' DE LA RUTA PARA QUE DJANGO LO ENCUENTRE
         return render(request, 'index.html', {'tasks': tasks})
     return render(request, 'index.html')
 
-# --- 📝 GESTIÓN DE MISIONES ---
 @login_required
 def add_task(request):
     if request.method == "POST":
@@ -39,7 +37,16 @@ def delete_task(request, task_id):
     task.delete()
     return redirect('index')
 
-# --- 🔐 CIERRE DE SESIÓN SEGURO ---
 def signout(request):
     auth_logout(request)
-    return redirect('index') # Te manda al inicio neón sin romperse
+    return redirect('index')
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+    return render(request, 'register.html', {'form': form})
