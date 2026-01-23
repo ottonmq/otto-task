@@ -8,8 +8,8 @@ from django.contrib.auth.models import User, Group
 
 # 1. Cambia el nombre del bloque "Autenticación y Autorización"
 # Esto sobreescribe el texto que aparece arriba de Usuarios
-Group._meta.app_label = "SISTEMA_DE_ACCESO"
-User._meta.app_label = "SISTEMA_DE_ACCESO"
+#Group._meta.app_label = "SISTEMA_DE_ACCESO"
+#User._meta.app_label = "SISTEMA_DE_ACCESO"
 
 # 2. Cambia el nombre de las etiquetas individuales
 User._meta.verbose_name = "Agente"
