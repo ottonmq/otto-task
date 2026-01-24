@@ -78,3 +78,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
+
+
+# settings.py
+
+# Esto elimina la pantalla de "Continue" y entra directo
+
+
+SOCIALACCOUNT_LOGIN_ON_GET = True
