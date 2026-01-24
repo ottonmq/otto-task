@@ -1,15 +1,16 @@
 {
   "name": "Otto-task Cyberpunk",
-  "short_name": "OttoTask",
+  "short_name": "Otto-Task",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#050505",
+  "background_color": "#000000",
   "theme_color": "#00FF41",
   "icons": [
     {
-      "src": "/static/images/logo.png",
+      "src": "/static/images/logo-pwa.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }

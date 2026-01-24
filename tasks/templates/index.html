@@ -692,5 +692,18 @@ function misionCompletada(checkbox) {
 }
 </script>
 
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      // Usamos la etiqueta static de Django para que no falle la ruta
+      navigator.serviceWorker.register("{% static 'sw.js' %}")
+        .then(reg => console.log('Otto-task: Sistema de Red Activo', reg))
+        .catch(err => console.log('Error en la Red', err));
+    });
+  }
+</script>
+
+
+
 </body>
 </html>
