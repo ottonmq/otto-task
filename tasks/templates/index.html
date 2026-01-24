@@ -15,15 +15,19 @@
 
 <link rel="icon" href="/static/images/logo-pwa.png" type="image/png">
   
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/static/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="/static/css/bootstrap-icons.css">
 
 <meta name="theme-color" content="#00FF41">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1187/1187544.png">
+
+<link rel="apple-touch-icon" href="/static/images/logo-pwa.png">
+
+
 
 <script>
   // Registro rápido del Service Worker (Cerebro PWA)
@@ -371,43 +375,24 @@ function lanzarEfectoPremium(checkbox) {
                 <p class="text-muted">Inicia sesión para empezar</p>
             </div>
             
-            <div class="d-grid gap-2">
-    {% load socialaccount %}
-    
+            <<div class="d-grid gap-2">
+    <a href="{% provider_login_url 'google' next='/' %}" class="btn-social">
+        <img src="/static/images/google-logo.png" width="20" alt="G"> 
+        <span>GOOGLE</span>
+    </a>
 
+    <a href="{% provider_login_url 'github' next='/' %}" class="btn-social">
+        <img src="/static/images/github-logo.png" width="20" alt="GH"> 
+        <span>GITHUB</span>
+    </a>
 
-
-    
-    
-<a href="{% provider_login_url 'google' next='/' %}" class="btn-social">
-    <i class="bi bi-google text-danger"></i> Google
-</a>
-
-
-<a href="{% provider_login_url 'github' next='/' %}" class="btn-social">
-    <i class="bi bi-github"></i> GitHub
-</a>
-
-    <a href="{% url 'login' %}" style="display: flex; align-items: center; justify-content: center; width: 100%; padding: 12px; background-color: #1a1a1a; border: 1px solid #444; border-radius: 10px; text-decoration: none;">
-        
-        <img src="/static/images/logo.png" alt="Logo" style="width: 24px; height: 24px; margin-right: 12px; filter: drop-shadow(0 0 5px #00f3ff);">
-        
-        <span style="
-            color: #00f3ff; 
-            text-shadow: 0 0 8px #00f3ff; 
-            font-family: 'Courier New', monospace; 
-            font-weight: bold; 
-            font-size: 16px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        ">
+    <a href="{% url 'login' %}" class="btn-social" style="border-color: #00f3ff; color: #00f3ff; text-shadow: 0 0 8px #00f3ff; box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);">
+        <img src="/static/images/logo-pwa.png" alt="Logo" style="width: 20px; height: 20px; filter: drop-shadow(0 0 5px #00f3ff);">
+        <span style="font-family: 'Courier New', monospace; font-weight: bold; letter-spacing: 1px; text-transform: uppercase;">
             LOGIN OTTO-TASK
         </span>
     </a>
-
-
-
-
+</div>
 
 
 
@@ -485,9 +470,9 @@ function lanzarEfectoPremium(checkbox) {
 </style>
 
 <div class="button-stack">
-    <a href="https://wa.me/50376511585?text=Protocolo%20Otto-Task:%20Solicito%20asistencia" 
-       target="_blank" class="btn-cyber-shared btn-green">
+    <a href="https://wa.me/50376511585?text=Protocolo%20Otto-Task" target="_blank" class="btn-cyber-shared btn-green">
         <span class="scanner-line"></span>
+        <img src="/static/images/whatsapp-logo.png" width="20" style="margin-right: 10px;">
         SOPORTE_BY_OTTONMQ
     </a>
 
@@ -498,10 +483,13 @@ function lanzarEfectoPremium(checkbox) {
 </div>
 
 
+    
 
 
 
-            </div>
+
+
+          
         {% endif %}
     </div>
 
