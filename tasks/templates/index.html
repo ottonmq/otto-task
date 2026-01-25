@@ -1,26 +1,29 @@
-{% load static %}
-{% load socialaccount %}
-<!DOCTYPE html>
-<html lang="es">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Otto-task</title>
-    
-    <link rel="manifest" href="{% static 'manifest.json' %}">
-    <meta name="theme-color" content="#00FF41">
+    <title>Otto-task | Núcleo Cyberpunk</title>
+
+    <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="{% static 'images/logo-pwa.png' %}"> <meta property="og:type" content="website">
-    <meta property="og:title" content="Otto-task | Herramienta Profesional">
-    <meta property="og:description" content="Sistema de gestión Cyberpunk v2.0">
+    
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/logo-pwa.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/logo-pwa.png' %}">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://otto-task.onrender.com/">
+    <meta property="og:title" content="OTTO-TASK | NÚCLEO CYBERPUNK">
+    <meta property="og:description" content="Sistema de gestión de misiones v2.0">
     <meta property="og:image" content="https://otto-task.onrender.com/static/images/logo-pwa.png">
 
-    <link rel="icon" href="{% static 'images/logo-pwa.png' %}" type="image/png">
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
 
 
 
