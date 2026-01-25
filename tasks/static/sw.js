@@ -1,22 +1,30 @@
 
-const CACHE_NAME = 'otto-task-v2';
+const CACHE_NAME = 'otto-task-v3';
 const urlsToCache = [
   '/',
-  '/static/logo-pwa.png',
-  // Agrega aquí tus archivos CSS si ya los tienes
+  '/login/',
+  '/static/manifest.json',
+  '/static/css/bootstrap.min.css', // Ruta confirmada en tu captura
+  '/static/images/logo-pwa.png',
+  '/static/images/google-logo.png',
+  '/static/images/github-logo.png'
 ];
 
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
+    caches.open(CACHE_NAME).then(cache => {
+      console.log('Sistema Offline: Archivos guardados');
+      return cache.addAll(urlsToCache);
+    })
   );
 });
 
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request)
-      .then(response => response || fetch(event.request))
+    fetch(event.request).catch(() => {
+      return caches.match(event.request).then(response => {
+        return response || caches.match('/');
+      });
+    })
   );
 });
-
