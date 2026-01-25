@@ -388,12 +388,77 @@ function lanzarEfectoPremium(checkbox) {
     </a>
 
     <a href="{% url 'login' %}" class="btn-social" style="border-color: #00f3ff; color: #00f3ff; text-shadow: 0 0 8px #00f3ff; box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);">
-        <img src="/static/images/logo-pwa.png" alt="Logo" style="width: 20px; height: 20px; filter: drop-shadow(0 0 5px #00f3ff);">
+     <img src="/static/images/logo-pwa.png" 
+        alt="Logo" 
+           style="width: 20px; 
+            height: 20px; 
+            mix-blend-mode: screen; 
+            filter: brightness(1.2) contrast(1.1) drop-shadow(0 0 5px #00f3ff);
+            background: transparent;">
+
         <span style="font-family: 'Courier New', monospace; font-weight: bold; letter-spacing: 1px; text-transform: uppercase;">
             LOGIN OTTO-TASK
         </span>
     </a>
 </div>
+
+<div id="btn-offline-entry" style="display: none; width: 100%; margin-top: 15px;">
+    <a href="javascript:void(0)" onclick="entrarModoOffline()" class="btn-glitch">
+        <span class="glitch-text">ACCESO_OFFLINE</span>
+    </a>
+</div>
+
+<style>
+    .btn-glitch {
+        display: block;
+        padding: 12px;
+        text-align: center;
+        text-decoration: none;
+        background: rgba(255, 0, 0, 0.1);
+        color: #ff0000;
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        border: 2px solid #ff0000;
+        text-transform: uppercase;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        animation: glitch-border 2s infinite;
+    }
+
+    .glitch-text {
+        position: relative;
+        display: inline-block;
+    }
+
+    /* EFECTO DE VIBRACIÓN EN EL BORDE */
+    @keyframes glitch-border {
+        0% { box-shadow: 0 0 10px #ff0000; border-color: #ff0000; }
+        10% { box-shadow: -2px 0 15px #ff0000; border-color: #ffffff; }
+        11% { box-shadow: 2px 0 15px #ff0000; border-color: #ff0000; }
+        100% { box-shadow: 0 0 10px #ff0000; border-color: #ff0000; }
+    }
+
+    /* EFECTO DE LETRAS MOVIÉNDOSE */
+    .btn-glitch:hover .glitch-text {
+        animation: glitch-text-move 0.3s infinite;
+        text-shadow: 2px 2px #ffffff, -2px -2px #000000;
+    }
+
+    @keyframes glitch-text-move {
+        0% { transform: translate(0); }
+        20% { transform: translate(-2px, 2px); }
+        40% { transform: translate(-2px, -2px); }
+        60% { transform: translate(2px, 2px); }
+        80% { transform: translate(2px, -2px); }
+        100% { transform: translate(0); }
+    }
+</style>
+
+
+
+
+
 
 
 
@@ -689,18 +754,131 @@ function misionCompletada(checkbox) {
 }
 </script>
 
-<script>
+<div id="offline-status-btn" style="display: none; text-align: center; margin-bottom: 20px;">
+    <div style="
+        background: rgba(255, 0, 0, 0.1);
+        border: 2px solid #ff0000;
+        color: #ff0000;
+        padding: 10px;
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+    ">
+        <span style="animation: blink 1s infinite;">●</span> MODO_OFFLINE_ACTIVO
+        <div style="
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 0, 0, 0.5);
+            animation: scan 2s infinite linear;
+        "></div>
+    </div>
+    <p style="color: #ff0000; font-size: 9px; margin-top: 5px; font-family: 'Courier New';">Sincronización pausada - Almacenando en caché local</p>
+</div>
+
+
+
+
+<script id="OTTO_CORE_SISTEMA_V3">
+  /**
+   * @protocolo: OTTO_CORE_APK_READY
+   * @descripcion: Control total de red, guardado local y visualización offline.
+   */
+
+  // 1. REGISTRO DEL SERVICE WORKER
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      // Usamos la etiqueta static de Django para que no falle la ruta
-      navigator.serviceWorker.register("{% static 'sw.js' %}")
-        .then(reg => console.log('Otto-task: Sistema de Red Activo', reg))
-        .catch(err => console.log('Error en la Red', err));
+      navigator.serviceWorker.register('/static/sw.js')
+        .then(reg => console.log("📡 SATÉLITE_V3: VINCULADO"))
+        .catch(err => console.log("⚠️ ERROR: ", err));
     });
   }
+
+  // 2. GUARDAR Y LISTAR TAREAS (MEMORIA FLASH)
+  const taskForm = document.querySelector('form.task-input-group');
+  
+  function renderizarTareasOffline() {
+    const listaUI = document.querySelector('.list-group');
+    if (!listaUI || navigator.onLine) return;
+
+    // Limpiamos marcas antiguas para no duplicar
+    document.querySelectorAll('.offline-mark').forEach(el => el.remove());
+
+    const tareasLocales = JSON.parse(localStorage.getItem('otto_tasks_offline') || '[]');
+    tareasLocales.forEach(tarea => {
+        const item = document.createElement('div');
+        item.className = 'list-group-item d-flex justify-content-between align-items-center offline-mark';
+        item.style.background = 'rgba(255, 0, 0, 0.05)';
+        item.style.borderLeft = '4px solid #ff0000';
+        item.innerHTML = `
+            <span style="color: #ff0000; font-family: monospace;">[OFFLINE] ${tarea.title}</span>
+            <small style="color: #ff0000;">MEMORIA_LOCAL</small>`;
+        listaUI.prepend(item);
+    });
+  }
+
+  if (taskForm) {
+    taskForm.addEventListener('submit', function(e) {
+      if (!navigator.onLine) {
+        e.preventDefault();
+        const input = this.querySelector('input[name="title"]');
+        const localTasks = JSON.parse(localStorage.getItem('otto_tasks_offline') || '[]');
+        localTasks.push({ title: input.value, id: Date.now() });
+        localStorage.setItem('otto_tasks_offline', JSON.stringify(localTasks));
+        input.value = '';
+        renderizarTareasOffline(); // Mostrarla al instante
+        alert("🛰️ SISTEMA: Tarea guardada en local.");
+      }
+    });
+  }
+
+  // 3. CONTROLADOR DE INTERFAZ (BLOQUEO Y BOTÓN ROJO)
+  function gestionarEstadoRed() {
+    const contenedorSocial = document.querySelector('.d-grid.gap-2');
+    const botonEmergencia = document.getElementById('btn-offline-entry');
+    const statusBanner = document.getElementById('offline-status-btn');
+
+    if (!navigator.onLine) {
+      if (contenedorSocial) {
+        contenedorSocial.querySelectorAll('a, button').forEach(btn => {
+          btn.style.pointerEvents = 'none';
+          btn.style.filter = 'grayscale(1) brightness(0.4)';
+          btn.style.opacity = '0.6';
+        });
+      }
+      if (botonEmergencia) botonEmergencia.style.display = 'block';
+      if (statusBanner) statusBanner.style.display = 'block';
+      document.body.style.border = '2px solid #ff0000';
+      renderizarTareasOffline();
+    } else {
+      if (contenedorSocial) {
+        contenedorSocial.querySelectorAll('a, button').forEach(btn => {
+          btn.style.pointerEvents = 'auto';
+          btn.style.filter = 'none';
+          btn.style.opacity = '1';
+        });
+      }
+      if (botonEmergencia) botonEmergencia.style.display = 'none';
+      if (statusBanner) statusBanner.style.display = 'none';
+      document.body.style.border = 'none';
+    }
+  }
+
+  // 4. SALTO TÁCTICO
+  function entrarModoOffline() {
+    document.body.style.filter = "invert(1) hue-rotate(180deg)";
+    setTimeout(() => { window.location.href = "/"; }, 350);
+  }
+
+  // ESCUCHAS
+  window.addEventListener('online', gestionarEstadoRed);
+  window.addEventListener('offline', gestionarEstadoRed);
+  document.addEventListener('DOMContentLoaded', gestionarEstadoRed);
 </script>
-
-
-
-</body>
-</html>
