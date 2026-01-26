@@ -1,3 +1,50 @@
+
+<div id="hacker-loader" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:999999; display:flex; flex-direction:column; justify-content:center; padding:30px; font-family:monospace; color:#39FF14;">
+    <div id="hacker-logs" style="height:150px; overflow:hidden; margin-bottom:20px;"></div>
+    <div style="width:100%; height:4px; background:#111; border:1px solid #39FF14;">
+        <div id="hacker-bar" style="width:0%; height:100%; background:#39FF14; box-shadow:0 0 10px #39FF14;"></div>
+    </div>
+</div>
+
+<script>
+    // ESTO MUEVE EL CARGADOR AL PRINCIPIO AUTOMÁTICAMENTE
+    const loader = document.getElementById('hacker-loader');
+    document.documentElement.appendChild(loader); 
+
+    const lineas = [
+        "> CONECTANDO AL BÚNKER...",
+        "> ESCANEANDO PROTOCOLOS...",
+        "> SALUDOS AMIGO SOY OTTO...",
+        "> ACCESO PREMIUM CONCEDIDO..."
+    ];
+    
+    let l = 0;
+    let logContainer = document.getElementById('hacker-logs');
+    let bar = document.getElementById('hacker-bar');
+
+    let timer = setInterval(() => {
+        if (l < lineas.length) {
+            let n = document.createElement('div');
+            n.innerText = lineas[l];
+            logContainer.appendChild(n);
+            l++;
+            bar.style.width = (l * 25) + "%";
+        } else {
+            clearInterval(timer);
+            setTimeout(() => { loader.style.display = 'none'; }, 600);
+        }
+    }, 400);
+</script>
+
+
+
+
+
+
+
+
+
+
 {% load static %}  
 {% load socialaccount %}
 
@@ -953,35 +1000,6 @@ window.addEventListener('online', () => {
         <div id="hacker-bar" style="width:0%; height:100%; background:#39FF14; box-shadow:0 0 10px #39FF14; transition: 0.2s;"></div>
     </div>
 </div>
-
-<script>
-    const lineas = [
-        "> CONECTANDO AL BÚNKER...",
-        "> ESCANEANDO PROTOCOLOS...",
-        "> BASE DE DATOS RECIENTES OK...",
-        ">SALUDOS AMIGO SOY OTTO...",
-        "> ACCESO PREMIUM CONCEDIDO..."
-    ];
-    
-    let l = 0;
-    let logContainer = document.getElementById('hacker-logs');
-    let bar = document.getElementById('hacker-bar');
-
-    let timer = setInterval(() => {
-        if (l < lineas.length) {
-            let n = document.createElement('div');
-            n.innerText = lineas[l];
-            logContainer.appendChild(n);
-            l++;
-            bar.style.width = (l * 25) + "%";
-        } else {
-            clearInterval(timer);
-            setTimeout(() => {
-                document.getElementById('hacker-loader').style.display = 'none';
-            }, 600);
-        }
-    }, 600);
-</script>
 
 
 </script>
