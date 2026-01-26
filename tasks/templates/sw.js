@@ -1,6 +1,8 @@
 
 /* --- OTTO-TASK CORE: PROTOCOLO DE SUPERVIVENCIA v5.0 --- */
 const CACHE_NAME = 'otto-task-v5';
+
+// Suministros críticos para que el Búnker sea Cyberpunk
 const OFFLINE_URLS = [
     '/',
     '/login/',
@@ -17,18 +19,19 @@ const OFFLINE_URLS = [
     'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js'
 ];
 
-// 1. INSTALACIÓN
+// 1. INSTALACIÓN: Secuestrar archivos y meterlos al búnker
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME).then(cache => {
             console.log('🛰️ [BÚNKER]: Asegurando suministros...');
-            return cache.addAll(OFFLINE_URLS);
+            // Force fetch para evitar cachés viejos del navegador
+            return cache.addAll(OFFLINE_URLS.map(url => new Request(url, {cache: 'reload'})));
         })
     );
     self.skipWaiting();
 });
 
-// 2. ACTIVACIÓN
+// 2. ACTIVACIÓN: Purgar versiones viejas y tomar control total
 self.addEventListener('activate', event => {
     event.waitUntil(
         Promise.all([
@@ -38,15 +41,18 @@ self.addEventListener('activate', event => {
             ))
         ])
     );
+    console.log('🛰️ [SISTEMA]: Búnker v5.0 en línea.');
 });
 
-// 3. FETCH: EL FILTRO ANTI-ERROR
+// 3. FETCH: Interceptar peticiones cuando no hay red
 self.addEventListener('fetch', event => {
+    // Solo manejamos peticiones GET
     if (event.request.method !== 'GET') return;
 
     event.respondWith(
         fetch(event.request)
             .then(response => {
+                // Si hay internet, actualizamos el caché con lo nuevo
                 const resClone = response.clone();
                 caches.open(CACHE_NAME).then(cache => {
                     cache.put(event.request, resClone);
@@ -54,7 +60,9 @@ self.addEventListener('fetch', event => {
                 return response;
             })
             .catch(() => {
+                // SI NO HAY RED: Buscamos en el Búnker
                 return caches.match(event.request).then(response => {
+                    // Si el archivo está en caché, lo damos. Si no, mandamos a la raíz (búnker)
                     return response || caches.match('/');
                 });
             })

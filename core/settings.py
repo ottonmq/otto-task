@@ -86,3 +86,9 @@ LOGOUT_REDIRECT_URL = 'index'
 
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
+
+
+# settings.py
+import mimetypes
+mimetypes.add_type("application/javascript", ".js", True)
