@@ -810,10 +810,11 @@ function misionCompletada(checkbox) {
         "></div>
     </div>
     <p style="color: #ff0000; font-size: 9px; margin-top: 5px; font-family: 'Courier New';">Sincronización pausada - Almacenando en caché local</p>
+    
+    <button onclick="entrarModoOffline(event)" style="margin-top:10px; background:black; border:1px solid #ff0000; color:#ff0000; padding:10px; width:100%; font-family:monospace;">
+        ENTRAR AL BÚNKER
+    </button>
 </div>
-
-
-
 
 <script id="OTTO_CORE_SISTEMA_V4">
   /**
@@ -824,7 +825,6 @@ function misionCompletada(checkbox) {
   // 1. REGISTRO DEL SERVICE WORKER (RUTA CORREGIDA A RAÍZ)
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      // QUITAMOS /static/ PARA QUE EL NAVEGADOR TENGA PERMISO DE BÚNKER
       navigator.serviceWorker.register('/sw.js') 
         .then(reg => console.log("📡 SATÉLITE_V4: NÚCLEO_ACTIVO"))
         .catch(err => console.log("⚠️ ERROR_NÚCLEO: ", err));
@@ -836,11 +836,24 @@ function misionCompletada(checkbox) {
     if(e) e.preventDefault();
     document.body.style.filter = "invert(1) hue-rotate(180deg)";
     console.log("🛰️ MODO BÚNKER: Cargando caché local...");
-    
-    // Forzamos la carga de la raíz desde la memoria del celular
     setTimeout(() => { window.location.replace('/'); }, 350);
   }
 
-  // [Aquí sigue tu lógica de renderizarTareasOffline y gestionarEstadoRed...]
-  // Solo asegúrate de que el botón en el HTML llame a entrarModoOffline(event)
+  // 3. GESTIÓN DE ESTADO DE RED (OCULTAR BOTONES LOGIN)
+  function gestionarEstadoRed() {
+    const botonesLogin = document.querySelector('.socialaccount_ballot') || document.querySelector('.d-grid.gap-2');
+    const bannerOffline = document.getElementById('offline-status-btn');
+
+    if (!navigator.onLine) {
+        if (botonesLogin) botonesLogin.style.setProperty('display', 'none', 'important');
+        if (bannerOffline) bannerOffline.style.display = 'block';
+    } else {
+        if (botonesLogin) botonesLogin.style.setProperty('display', 'block', 'important');
+        if (bannerOffline) bannerOffline.style.display = 'none';
+    }
+  }
+
+  window.addEventListener('online', gestionarEstadoRed);
+  window.addEventListener('offline', gestionarEstadoRed);
+  window.addEventListener('load', gestionarEstadoRed);
 </script>
