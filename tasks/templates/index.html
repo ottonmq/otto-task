@@ -754,7 +754,7 @@ monitorConexion(); // Ejecución inmediata
 </div>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
-<script>
+<script id="OTTO_CONFETTI_LOGIC">
 function misionCompletada(checkbox) {
     if (checkbox.checked) {
         // 1. EXPLOSIÓN DE CONFETI NEÓN
@@ -811,8 +811,8 @@ function misionCompletada(checkbox) {
     </div>
     <p style="color: #ff0000; font-size: 9px; margin-top: 5px; font-family: 'Courier New';">Sincronización pausada - Almacenando en caché local</p>
     
-    <button onclick="entrarModoOffline(event)" style="margin-top:10px; background:black; border:1px solid #ff0000; color:#ff0000; padding:10px; width:100%; font-family:monospace;">
-        ENTRAR AL BÚNKER
+    <button onclick="entrarModoOffline(event)" style="margin-top:10px; background:black; border:2px solid #ff0000; color:#ff0000; padding:10px; width:100%; font-family:monospace; font-weight:bold; cursor:pointer; text-transform:uppercase;">
+        >> ENTRAR AL BÚNKER <<
     </button>
 </div>
 
@@ -822,7 +822,7 @@ function misionCompletada(checkbox) {
    * @estado: REGISTRO_RAIZ_SISTEMA
    */
 
-  // 1. REGISTRO DEL SERVICE WORKER (RUTA CORREGIDA A RAÍZ)
+  // 1. REGISTRO DEL SERVICE WORKER (USA LA RUTA DE TU URLS.PY)
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js') 
@@ -836,23 +836,30 @@ function misionCompletada(checkbox) {
     if(e) e.preventDefault();
     document.body.style.filter = "invert(1) hue-rotate(180deg)";
     console.log("🛰️ MODO BÚNKER: Cargando caché local...");
+    // Forzamos la carga de la raíz desde la memoria del móvil
     setTimeout(() => { window.location.replace('/'); }, 350);
   }
 
-  // 3. GESTIÓN DE ESTADO DE RED (OCULTAR BOTONES LOGIN)
+  // 3. GESTIÓN DE ESTADO DE RED (OCULTAR BOTONES LOGIN / MOSTRAR ESCÁNER)
   function gestionarEstadoRed() {
+    // Busca los botones de Google/Github de Allauth
     const botonesLogin = document.querySelector('.socialaccount_ballot') || document.querySelector('.d-grid.gap-2');
     const bannerOffline = document.getElementById('offline-status-btn');
 
     if (!navigator.onLine) {
+        // MODO BÚNKER: OCULTAR LOGIN Y MOSTRAR ESCÁNER
         if (botonesLogin) botonesLogin.style.setProperty('display', 'none', 'important');
         if (bannerOffline) bannerOffline.style.display = 'block';
+        document.body.style.border = "2px solid #ff0000";
     } else {
+        // MODO ONLINE: RESTAURAR ACCESO
         if (botonesLogin) botonesLogin.style.setProperty('display', 'block', 'important');
         if (bannerOffline) bannerOffline.style.display = 'none';
+        document.body.style.border = "none";
     }
   }
 
+  // DISPARADORES DE RED
   window.addEventListener('online', gestionarEstadoRed);
   window.addEventListener('offline', gestionarEstadoRed);
   window.addEventListener('load', gestionarEstadoRed);

@@ -4,7 +4,8 @@ const CACHE_NAME = 'otto-task-v5';
 const OFFLINE_URLS = [
     '/',
     '/login/',
-    '/static/manifest.json',
+    '/manifest.json',
+    '/sw.js',
     '/static/css/bootstrap.min.css',
     '/static/images/logo-pwa.png',
     '/static/images/google-logo.png',
@@ -19,7 +20,7 @@ self.addEventListener('install', event => {
             return cache.addAll(OFFLINE_URLS);
         })
     );
-    self.skipWaiting(); // Fuerza la actualización sin esperar a cerrar el navegador
+    self.skipWaiting();
 });
 
 // 2. ACTIVACIÓN: Tomar el control de inmediato
@@ -27,7 +28,6 @@ self.addEventListener('activate', event => {
     event.waitUntil(
         Promise.all([
             self.clients.claim(),
-            // Borrar cachés viejos (v3, v4, etc)
             caches.keys().then(keys => Promise.all(
                 keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
             ))
@@ -42,7 +42,6 @@ self.addEventListener('fetch', event => {
     event.respondWith(
         fetch(event.request)
             .then(response => {
-                // Si hay red, guardamos una copia de lo que el usuario ve
                 const resClone = response.clone();
                 caches.open(CACHE_NAME).then(cache => {
                     cache.put(event.request, resClone);
@@ -50,10 +49,7 @@ self.addEventListener('fetch', event => {
                 return response;
             })
             .catch(() => {
-                // SI NO HAY RED: Buscamos en el búnker
                 return caches.match(event.request).then(response => {
-                    // Si tenemos la página en caché, la damos. 
-                    // Si no, forzamos la carga de la Home '/'
                     return response || caches.match('/');
                 });
             })
