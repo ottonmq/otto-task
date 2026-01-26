@@ -756,10 +756,9 @@ monitorConexion(); // Ejecución inmediata
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
 <script id="OTTO_MASTER_INTEGRATED">
-/* --- 1. LÓGICA DE TAREAS Y CONFETI (TU VERSIÓN PREMIUM) --- */
+/* --- 1. LÓGICA DE TAREAS Y CONFETI (TU VERSIÓN) --- */
 function misionCompletada(checkbox) {
     if (checkbox.checked) {
-        // Explocion Neon
         confetti({
             particleCount: 150,
             spread: 70,
@@ -767,27 +766,23 @@ function misionCompletada(checkbox) {
             colors: ['#00FF41', '#FFFFFF', '#003311']
         });
 
-        // Banner de exito
         const banner = document.createElement('div');
         banner.innerHTML = `<div style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:black; border:2px solid #00FF41; color:#00FF41; padding:20px; font-family:monospace; z-index:10000; box-shadow:0 0 20px #00FF41; text-transform:uppercase;">
             ¡BIEN HECHO, {{ user.username|upper }}!
         </div>`;
         document.body.appendChild(banner);
 
-        setTimeout(() => {
-            checkbox.form.submit();
-        }, 600);
+        setTimeout(() => { checkbox.form.submit(); }, 600);
     } else {
         checkbox.form.submit();
     }
 }
 
-// Alias para no romper llamadas viejas si existen
 function lanzarEfectoPremium(checkbox) { misionCompletada(checkbox); }
 
 /* --- 2. GESTIÓN DE RED Y BÚNKER --- */
 const CONFIG = {
-    swPath: '/sw.js', // Ruta raiz para que Django lo sirva bien
+    swPath: '/sw.js',
     selectors: {
         offlineBtn: 'offline-status-btn',
         loginContainer: '.d-grid.gap-2',
@@ -842,14 +837,12 @@ window.addEventListener('online', gestionarProtocoloRed);
 window.addEventListener('offline', gestionarProtocoloRed);
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Control de auth: si entramos por el búnker, ocultamos el login
     if (localStorage.getItem('otto_bunker_auth') === 'granted' && !navigator.onLine) {
         const login = document.querySelector(CONFIG.selectors.loginContainer);
         if (login) login.style.setProperty('display', 'none', 'important');
         localStorage.removeItem('otto_bunker_auth');
     }
 
-    // Lógica de Tema
     const btnTheme = document.getElementById('themeBtn');
     if (btnTheme) {
         btnTheme.addEventListener('click', () => {
@@ -861,7 +854,95 @@ document.addEventListener('DOMContentLoaded', () => {
             if(icon) icon.className = (nuevo === 'dark' ? 'bi bi-moon-stars-fill' : 'bi bi-sun-fill');
         });
     }
-
     gestionarProtocoloRed();
 });
+
+// Agregá esto a tu bloque de scripts final
+document.addEventListener('submit', function(e) {
+    if (!navigator.onLine && e.target.tagName === 'FORM') {
+        e.preventDefault(); // Detenemos el envío que va a fallar
+        
+        const formData = new FormData(e.target);
+        const tarea = {
+            id: Date.now(),
+            title: formData.get('title'), // Cambiá 'title' por el name de tu input
+            description: formData.get('description'),
+            status: 'OFFLINE_PENDING'
+        };
+
+        // Guardamos en la mochila (LocalStorage)
+        let tareasOffline = JSON.parse(localStorage.getItem('tareas_bunker') || '[]');
+        tareasOffline.push(tarea);
+        localStorage.setItem('tareas_bunker', JSON.stringify(tareasOffline));
+
+        alert("🛰️ [BÚNKER]: Misión guardada en memoria local. Se sincronizará al detectar señal.");
+        window.location.href = '/'; // Regresamos a la lista
+    }
+});
+
+/* --- 6. PROTOCOLO DE TRANSMISIÓN DIFERIDA --- */
+
+// A. CAPTURAR FORMULARIOS CUANDO NO HAY SEÑAL
+document.addEventListener('submit', function(e) {
+    if (!navigator.onLine) {
+        e.preventDefault(); // Bloqueamos el error de "Sin conexión"
+        
+        const form = e.target;
+        const formData = new FormData(form);
+        
+        // Creamos el paquete de datos
+        const misionLocal = {
+            id: Date.now(),
+            title: formData.get('title') || 'Misión sin título',
+            description: formData.get('description') || '',
+            status: 'PENDING_SYNC'
+        };
+
+        // Guardar en la mochila de emergencia
+        let mochila = JSON.parse(localStorage.getItem('otto_backlog') || '[]');
+        mochila.push(misionLocal);
+        localStorage.setItem('otto_backlog', JSON.stringify(mochila));
+
+        // Feedback Cyberpunk
+        alert("🚨 [BÚNKER]: Conexión fallida. Misión guardada en caché local. Se transmitirá al detectar enlace.");
+        window.location.href = '/'; // Regresar a la base
+    }
+});
+
+// B. TRANSMISIÓN AUTOMÁTICA AL RECUPERAR SEÑAL
+window.addEventListener('online', () => {
+    const mochila = JSON.parse(localStorage.getItem('otto_backlog') || '[]');
+    
+    if (mochila.length > 0) {
+        console.log("🛰️ [SISTEMA]: Enlace restablecido. Transmitiendo misiones pendientes...");
+        
+        mochila.forEach((mision, index) => {
+            // Enviamos cada misión a Django usando fetch
+            fetch('/tasks/create/', { // Asegúrate de que esta URL coincida con tu urls.py
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: new URLSearchParams({
+                    'title': mision.title,
+                    'description': mision.description
+                })
+            }).then(response => {
+                if (response.ok) {
+                    console.log(`✅ Misión ${mision.id} sincronizada.`);
+                    // Limpiar la mochila después de enviar
+                    mochila.splice(index, 1);
+                    localStorage.setItem('otto_backlog', JSON.stringify(mochila));
+                    
+                    // Si es la última, recargar para mostrar en la lista real
+                    if (mochila.length === 0) window.location.reload();
+                }
+            });
+        });
+    }
+});
+
+
+
 </script>
