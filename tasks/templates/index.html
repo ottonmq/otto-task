@@ -403,10 +403,39 @@ function lanzarEfectoPremium(checkbox) {
 </div>
 
 <div id="btn-offline-entry" style="display: none; width: 100%; margin-top: 15px;">
-    <a href="javascript:void(0)" onclick="entrarModoOffline()" class="btn-glitch">
-        <span class="glitch-text">ACCESO_OFFLINE</span>
-    </a>
+    <button onclick="entrarModoOffline(event)" 
+            style="background: transparent; border: 2px solid #ff003c; color: #ff003c; cursor: pointer; padding: 10px; width: 100%; font-family: monospace; text-transform: uppercase; font-weight: bold; box-shadow: 0 0 10px #ff003c;">
+        [ ACCESO_OFFLINE_ACTIVADO ]
+    </button>
 </div>
+
+<script>
+// 1. Monitor de red: Si se cae el internet, el botón aparece solo
+function monitorConexion() {
+    const bunkerBtn = document.getElementById('btn-offline-entry');
+    if (!navigator.onLine) {
+        bunkerBtn.style.display = 'block';
+    } else {
+        bunkerBtn.style.display = 'none';
+    }
+}
+
+// 2. Función de entrada: Fuerza al navegador a leer el búnker (caché)
+function entrarModoOffline(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("🛰️ MODO BÚNKER: Cargando protocolos locales...");
+    
+    // Forzamos la carga de la raíz '/' que es lo que guardó el Service Worker
+    window.location.replace('/'); 
+}
+
+// Escuchas de eventos de red
+window.addEventListener('offline', monitorConexion);
+window.addEventListener('online', monitorConexion);
+monitorConexion(); // Ejecución inmediata
+</script>
+
 
 <style>
     .btn-glitch {
@@ -786,99 +815,32 @@ function misionCompletada(checkbox) {
 
 
 
-<script id="OTTO_CORE_SISTEMA_V3">
+<script id="OTTO_CORE_SISTEMA_V4">
   /**
-   * @protocolo: OTTO_CORE_APK_READY
-   * @descripcion: Control total de red, guardado local y visualización offline.
+   * @protocolo: OTTO_CORE_APK_READY_V4
+   * @estado: REGISTRO_RAIZ_SISTEMA
    */
 
-  // 1. REGISTRO DEL SERVICE WORKER
+  // 1. REGISTRO DEL SERVICE WORKER (RUTA CORREGIDA A RAÍZ)
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/static/sw.js')
-        .then(reg => console.log("📡 SATÉLITE_V3: VINCULADO"))
-        .catch(err => console.log("⚠️ ERROR: ", err));
+      // QUITAMOS /static/ PARA QUE EL NAVEGADOR TENGA PERMISO DE BÚNKER
+      navigator.serviceWorker.register('/sw.js') 
+        .then(reg => console.log("📡 SATÉLITE_V4: NÚCLEO_ACTIVO"))
+        .catch(err => console.log("⚠️ ERROR_NÚCLEO: ", err));
     });
   }
 
-  // 2. GUARDAR Y LISTAR TAREAS (MEMORIA FLASH)
-  const taskForm = document.querySelector('form.task-input-group');
-  
-  function renderizarTareasOffline() {
-    const listaUI = document.querySelector('.list-group');
-    if (!listaUI || navigator.onLine) return;
-
-    // Limpiamos marcas antiguas para no duplicar
-    document.querySelectorAll('.offline-mark').forEach(el => el.remove());
-
-    const tareasLocales = JSON.parse(localStorage.getItem('otto_tasks_offline') || '[]');
-    tareasLocales.forEach(tarea => {
-        const item = document.createElement('div');
-        item.className = 'list-group-item d-flex justify-content-between align-items-center offline-mark';
-        item.style.background = 'rgba(255, 0, 0, 0.05)';
-        item.style.borderLeft = '4px solid #ff0000';
-        item.innerHTML = `
-            <span style="color: #ff0000; font-family: monospace;">[OFFLINE] ${tarea.title}</span>
-            <small style="color: #ff0000;">MEMORIA_LOCAL</small>`;
-        listaUI.prepend(item);
-    });
-  }
-
-  if (taskForm) {
-    taskForm.addEventListener('submit', function(e) {
-      if (!navigator.onLine) {
-        e.preventDefault();
-        const input = this.querySelector('input[name="title"]');
-        const localTasks = JSON.parse(localStorage.getItem('otto_tasks_offline') || '[]');
-        localTasks.push({ title: input.value, id: Date.now() });
-        localStorage.setItem('otto_tasks_offline', JSON.stringify(localTasks));
-        input.value = '';
-        renderizarTareasOffline(); // Mostrarla al instante
-        alert("🛰️ SISTEMA: Tarea guardada en local.");
-      }
-    });
-  }
-
-  // 3. CONTROLADOR DE INTERFAZ (BLOQUEO Y BOTÓN ROJO)
-  function gestionarEstadoRed() {
-    const contenedorSocial = document.querySelector('.d-grid.gap-2');
-    const botonEmergencia = document.getElementById('btn-offline-entry');
-    const statusBanner = document.getElementById('offline-status-btn');
-
-    if (!navigator.onLine) {
-      if (contenedorSocial) {
-        contenedorSocial.querySelectorAll('a, button').forEach(btn => {
-          btn.style.pointerEvents = 'none';
-          btn.style.filter = 'grayscale(1) brightness(0.4)';
-          btn.style.opacity = '0.6';
-        });
-      }
-      if (botonEmergencia) botonEmergencia.style.display = 'block';
-      if (statusBanner) statusBanner.style.display = 'block';
-      document.body.style.border = '2px solid #ff0000';
-      renderizarTareasOffline();
-    } else {
-      if (contenedorSocial) {
-        contenedorSocial.querySelectorAll('a, button').forEach(btn => {
-          btn.style.pointerEvents = 'auto';
-          btn.style.filter = 'none';
-          btn.style.opacity = '1';
-        });
-      }
-      if (botonEmergencia) botonEmergencia.style.display = 'none';
-      if (statusBanner) statusBanner.style.display = 'none';
-      document.body.style.border = 'none';
-    }
-  }
-
-  // 4. SALTO TÁCTICO
-  function entrarModoOffline() {
+  // 2. FUNCIÓN DE SALTO (SIN FALLO DE NAVEGACIÓN)
+  function entrarModoOffline(e) {
+    if(e) e.preventDefault();
     document.body.style.filter = "invert(1) hue-rotate(180deg)";
-    setTimeout(() => { window.location.href = "/"; }, 350);
+    console.log("🛰️ MODO BÚNKER: Cargando caché local...");
+    
+    // Forzamos la carga de la raíz desde la memoria del celular
+    setTimeout(() => { window.location.replace('/'); }, 350);
   }
 
-  // ESCUCHAS
-  window.addEventListener('online', gestionarEstadoRed);
-  window.addEventListener('offline', gestionarEstadoRed);
-  document.addEventListener('DOMContentLoaded', gestionarEstadoRed);
+  // [Aquí sigue tu lógica de renderizarTareasOffline y gestionarEstadoRed...]
+  // Solo asegúrate de que el botón en el HTML llame a entrarModoOffline(event)
 </script>
