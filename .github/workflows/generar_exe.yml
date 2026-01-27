@@ -15,7 +15,7 @@ jobs:
 
       - name: Instalando Herramientas y Librerías
         run: |
-          pip install django pyinstaller pywebview dj-database-url
+          pip install django pyinstaller pywebview dj-database-url django-allauth
 
       - name: Fabricando el .EXE
         run: |
