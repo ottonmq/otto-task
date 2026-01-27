@@ -8,31 +8,31 @@ jobs:
       - name: Clonando el ADN del proyecto
         uses: actions/checkout@v4
 
-      - name: Instalando Motor Python
+      - name: Motor Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Instalando Dependencias Reales
-        # He quitado los números de versión específicos para que el robot no se trabe
+      - name: Instalando Dependencias
         run: |
           pip install django pyinstaller pywebview dj-database-url django-allauth djangorestframework requests pillow whitenoise psycopg2-binary google-cloud
 
-      - name: Fabricando el .EXE (Otto-Task-OS)
-        # Este comando busca el archivo arranque.py automáticamente
+      - name: Fabricando el .EXE (Motor Django)
+        # Probamos primero con manage.py y luego dentro de la carpeta Core
         run: |
-          if (Test-Path "arranque.py") {
-            pyinstaller --noconsole --onefile --name "Otto-Task-OS" arranque.py
-          } elseif (Test-Path "sentinel_app/arranque.py") {
-            pyinstaller --noconsole --onefile --name "Otto-Task-OS" sentinel_app/arranque.py
+          if (Test-Path "manage.py") {
+            pyinstaller --noconsole --onefile --name "Otto-Task-OS" manage.py
+          } elseif (Test-Path "Core/manage.py") {
+            pyinstaller --noconsole --onefile --name "Otto-Task-OS" Core/manage.py
           } else {
-            echo "ERROR: No se encontró el archivo principal"
-            exit 1
+            $primerPy = Get-ChildItem -Filter *.py | Select-Object -First 1
+            pyinstaller --noconsole --onefile --name "Otto-Task-OS" $primerPy.Name
           }
 
       - name: Entrega de Producto Final
         uses: actions/upload-artifact@v4
         with:
           name: Otto-Task-Ejecutable
+          path: dist/Otto-Task-OS.exe
           path: dist/Otto-Task-OS.exe
           
