@@ -13,13 +13,13 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Instalando Dependencias
+      - name: Instalando TODO el Sistema
         run: |
-          pip install django pyinstaller pywebview dj-database-url django-allauth djangorestframework requests pillow whitenoise psycopg2-binary google-cloud
+          pip install django pyinstaller pywebview dj-database-url django-allauth djangorestframework requests pillow whitenoise psycopg2-binary google-cloud PyJWT cryptography oauthlib requests-oauthlib sqlparse pytz asgiref
 
       - name: Fabricando el .EXE
         run: |
-          # El robot buscara el archivo manage.py que es el motor de Core
+          # Buscamos manage.py en la raiz o en la carpeta Core
           if (Test-Path "manage.py") {
             pyinstaller --noconsole --onefile --name "Otto-Task-OS" manage.py
           } elseif (Test-Path "Core/manage.py") {
