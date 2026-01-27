@@ -1,0 +1,24 @@
+---------------------------------------------------
+Here are the ownership and the certification details
+of the otto-task 1.0
+---------------------------------------------------
+
+app_name - 						otto-task
+app_alias - 					ottotask
+app_author_name - 				My Company
+app_author_organizational - 	My Company
+app_author_organization - 		My Company
+app_author_locality - 			My Company
+app_author_state - 				Sonsonate
+app_author_country - 			El Salvador
+app_password - 					mhGu9F6yW2py
+app_versionName - 				versionName "1.0"
+app_versionCode - 				100
+
+---------------------------------------------------
+The certification was created by WebIntoApp.com at
+the Monday 26th of January 2026 05:02:45 AM
+
+https://webintoapp.com
+---------------------------------------------------
+
