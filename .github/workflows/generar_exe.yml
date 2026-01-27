@@ -17,22 +17,21 @@ jobs:
         run: |
           pip install django pyinstaller pywebview dj-database-url django-allauth djangorestframework requests pillow whitenoise psycopg2-binary google-cloud
 
-      - name: Fabricando el .EXE (Motor Django)
-        # Probamos primero con manage.py y luego dentro de la carpeta Core
+      - name: Fabricando el .EXE
         run: |
+          # El robot buscara el archivo manage.py que es el motor de Core
           if (Test-Path "manage.py") {
             pyinstaller --noconsole --onefile --name "Otto-Task-OS" manage.py
           } elseif (Test-Path "Core/manage.py") {
             pyinstaller --noconsole --onefile --name "Otto-Task-OS" Core/manage.py
           } else {
-            $primerPy = Get-ChildItem -Filter *.py | Select-Object -First 1
-            pyinstaller --noconsole --onefile --name "Otto-Task-OS" $primerPy.Name
+            $main = Get-ChildItem -Filter *.py | Select-Object -First 1
+            pyinstaller --noconsole --onefile --name "Otto-Task-OS" $main.Name
           }
 
-      - name: Entrega de Producto Final
+      - name: Entrega Final
         uses: actions/upload-artifact@v4
         with:
           name: Otto-Task-Ejecutable
-          path: dist/Otto-Task-OS.exe
           path: dist/Otto-Task-OS.exe
           
