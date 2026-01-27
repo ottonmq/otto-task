@@ -13,11 +13,12 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Instalando TODO lo que falta
+      - name: Instalando Dependencias del Sistema
         run: |
-          pip install django pyinstaller pywebview dj-database-url django-allauth requests pillow whitenoise
+          pip install pyinstaller pywebview
+          pip install asgiref==3.11.0 certifi==2026.1.4 cffi==2.0.0 charset-normalizer==3.4.4 cryptography==42.0.5 dj-database-url==3.1.0 Django==6.0.1 django-allauth==65.14.0 djangorestframework==3.16.1 google-cloud==0.34.0 gunicorn==23.0.0 idna==3.11 oauthlib==3.3.1 packaging==25.0 pillow==12.1.0 psycopg2-binary==2.9.11 pycparser==2.23 PyJWT==2.10.1 pytz==2025.2 requests==2.32.5 requests-oauthlib==2.0.0 setuptools==80.9.0 sqlparse==0.5.5 tzdata==2025.3 urllib3==2.6.3 wheel==0.45.1 whitenoise==6.11.0
 
-      - name: Fabricando el .EXE
+      - name: Fabricando el .EXE (Otto-Task-OS)
         run: |
           if (Test-Path "arranque.py") {
             pyinstaller --noconsole --onefile --name "Otto-Task-OS" arranque.py
