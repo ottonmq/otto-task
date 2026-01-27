@@ -1,25 +1,32 @@
-
-
-
-
 name: Compilar Otto-task EXE
 on: [push]
+
 jobs:
   build:
     runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Python
-        uses: actions/setup-python@v3.10
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+
       - name: Install dependencies
         run: pip install django pyinstaller pywebview
+
       - name: Build EXE
-        run: pyinstaller --noconsole --onefile --name "Otto-Task-OS" arranque.py
+        run: |
+          if (Test-Path "arranque.py") {
+            pyinstaller --noconsole --onefile --name "Otto-Task-OS" arranque.py
+          } else {
+            pyinstaller --noconsole --onefile --name "Otto-Task-OS" sentinel_app/arranque.py
+          }
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Otto-Task-Ejecutable
           path: dist/Otto-Task-OS.exe
+          
