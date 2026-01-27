@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="profile-header-card">
+        <div class="avatar-scanner">
+            <div class="rotating-light"></div>
+            {% if user.socialaccount_set.all %}
+                <img src="{{ user.socialaccount_set.all.0.get_avatar_url }}" class="profile-circle-img">
+            {% else %}
+                <div class="profile-circle-img">{{ user.username|slice:":1"|upper }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="info-section">
+            <h2 class="profile-name">{{ user.first_name|default:user.username }}</h2>
+            <p class="profile-meta">SISTEMA_ACTIVO // {{ user.date_joined|date:"M Y" }}</p>
+            <span class="badge-verified">Vendedor Verificado</span>
+        </div>
+    </div>
+
+    <h4 class="mt-5 mb-4 text-accent">MIS_PUBLICACIONES</h4>
+    <div class="row g-3">
+        {% for v in mis_anuncios %}
+        <div class="col-12 col-md-6">
+            <div class="card-item-horizontal">
+                <div class="img-mini">
+                    {% if v.foto %} <img src="{{ v.foto.url }}"> {% endif %}
+                </div>
+                <div class="card-info">
+                    <div class="d-flex justify-content-between">
+                        <span class="price">${{ v.precio }}</span>
+                        <div class="actions">
+                            <a href="{% url 'gestionar_anuncio' v.pk %}">⚙️</a>
+                            <a href="{% url 'eliminar_anuncio' v.pk %}" class="text-danger">✕</a>
+                        </div>
+                    </div>
+                    <div class="title">{{ v.titulo }}</div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5 text-muted">[ NO_DATA_DETECTED ]</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

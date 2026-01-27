@@ -1,0 +1,28 @@
+name: Compilar Otto-task EXE
+on: [push] # Se activa cada vez que subís código
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Clonando el ADN del proyecto
+        uses: actions/checkout@v3
+
+      - name: Instalando Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Instalando herramientas de soldadura
+        run: |
+          pip install django pyinstaller pywebview
+
+      - name: Fabricando el .EXE
+        run: |
+          pyinstaller --noconsole --onefile --name "Otto-Task-OS" arranque.py
+
+      - name: Entregando Producto Final
+        uses: actions/upload-artifact@v3
+        with:
+          name: Otto-Task-Ejecutable
+          path: dist/Otto-Task-OS.exe

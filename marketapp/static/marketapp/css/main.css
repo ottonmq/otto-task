@@ -1,0 +1,158 @@
+/* =========================================
+   ESTILO CYBER-MINIMALISTA
+   ========================================= */
+:root {
+    --negro-fondo: #0a0b0d;
+    --negro-card: #16181a;
+    --azul-cyber: #2e89ff;
+    --gris-texto: #8e9297;
+    --blanco: #ffffff;
+}
+
+body {
+    background-color: var(--negro-fondo);
+    color: var(--blanco);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+}
+
+/* NAVBAR ALINEADA */
+.market-nav {
+    background: var(--negro-card);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #2d3136;
+}
+
+.logo-text {
+    color: var(--azul-cyber);
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+/* BOTÓN VENDER (EL CUADRADO AZUL) */
+.btn-vender-cyber {
+    background: var(--azul-cyber);
+    color: white !important;
+    text-decoration: none;
+    padding: 10px 25px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.btn-vender-cyber span:first-child {
+    font-size: 18px;
+    margin-bottom: -5px;
+}
+
+/* PANEL DE CONTROL (RECUPERADO) */
+.control-panel {
+    background: var(--negro-card);
+    border: 1px solid rgba(46, 137, 255, 0.2);
+    border-radius: 15px;
+    padding: 25px;
+    margin: 20px auto;
+    max-width: 95%;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    background: var(--azul-cyber);
+    border-radius: 50%;
+    box-shadow: 0 0 15px var(--azul-cyber);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+}
+
+/* GRID DE PRODUCTOS */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Dos columnas exactas en móvil */
+    gap: 15px;
+    padding: 15px;
+}
+
+.card-cyber {
+    background: var(--negro-card);
+    border-radius: 15px;
+    overflow: hidden;
+    padding: 15px;
+    border: 1px solid #2d3136;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.price-text {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--blanco);
+    margin: 10px 0;
+}
+
+/* BOTÓN DETALLES (BORDE FINO) */
+.btn-details {
+    border: 1px solid var(--azul-cyber);
+    color: var(--azul-cyber);
+    text-align: center;
+    padding: 8px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+
+/* LOGO PRINCIPAL */
+.logo-text {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #2e89ff; /* Tu azul característico */
+    text-decoration: none;
+    letter-spacing: -1px;
+}
+
+/* BOTÓN LOGIN GOOGLE (RECUPERADO) */
+.btn-google-login {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #ffffff;
+    color: #2e89ff;
+    border: 1px solid #dddfe2;
+    padding: 10px 18px;
+    border-radius: 12px;
+    text-decoration: none !important;
+    font-weight: 600;
+    font-size: 14px;
+    transition: 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-google-login:hover {
+    background: #f8f9fa;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* EL ICONO DE GOOGLE */
+.google-icon {
+    width: 20px;
+    height: 20px;
+    display: block;
+}

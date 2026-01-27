@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OTTO-MARKET // SYSTEM</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        /* SOLDADURA DE RESPONSIVE - NADA SE MUEVE */
+        * { box-sizing: border-box; }
+        
+        html, body { 
+            max-width: 100vw; 
+            overflow-x: hidden; /* MATA EL SCROLL LATERAL */
+            background-color: #050505; 
+            color: #ffffff; 
+            margin: 0; padding: 0;
+        }
+
+        /* HEADER SUPERIOR */
+        .nav-otto { 
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px; background: #111; border-bottom: 1px solid #222;
+            width: 100%; height: 60px;
+        }
+        .logo { color: #0078d4; font-weight: 800; font-size: 1.1rem; text-decoration: none; }
+
+        /* REJILLA DE BOTONES: 3 COLUMNAS EXACTAS */
+        .grid-responsive { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            width: 100%; 
+            background: #0a0a0a;
+            border-bottom: 1px solid #333;
+        }
+
+        .btn-system {
+            padding: 12px 2px;
+            text-align: center;
+            border: 0.5px solid #222;
+            text-decoration: none;
+            color: #888;
+            font-size: 0.65rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-system i { font-size: 1.1rem; }
+        
+        /* BOTONES ESPECIALES */
+        .vender { background: #0078d4; color: white !important; font-weight: bold; }
+        .admin { color: #ff8c00 !important; border-color: #ff8c00; }
+        .google-btn { background: white; color: black !important; padding: 5px 10px; border-radius: 4px; font-weight: bold; text-decoration: none; font-size: 0.7rem; }
+        .logout-btn { color: #f85149; background: none; border: none; font-size: 1.3rem; }
+    </style>
+</head>
+<body>
+
+    <header class="nav-otto">
+        <a href="/" class="logo">OTTO-MARKET</a>
+        <div class="d-flex align-items-center gap-2">
+            {% if not user.is_authenticated %}
+                <a href="/accounts/google/login/" class="google-btn">GOOGLE</a>
+            {% else %}
+                <form action="{% url 'account_logout' %}" method="post" class="m-0">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn"><i class="bi bi-power"></i></button>
+                </form>
+            {% endif %}
+        </div>
+    </header>
+
+    <nav class="grid-responsive">
+        <a href="/vender/" class="btn-system vender"><i class="bi bi-plus-square"></i> VENDER</a>
+        <a href="/dashboard/" class="btn-system"><i class="bi bi-cpu"></i> DASHBOARD</a>
+        <a href="/perfil/" class="btn-system"><i class="bi bi-person"></i> PERSONAL</a>
+        
+        <a href="/stats/" class="btn-system"><i class="bi bi-bar-chart"></i> STATS</a>
+        
+        {% if user.is_superuser %}
+            <a href="/admin/" class="btn-system admin"><i class="bi bi-shield-lock"></i> ADMIN</a>
+        {% else %}
+            <a href="/accounts/signup/" class="btn-system"><i class="bi bi-pencil-square"></i> REGISTRO</a>
+        {% endif %}
+
+        <a href="/global/" class="btn-system"><i class="bi bi-globe"></i> GLOBAL</a>
+    </nav>
+
+    <main style="width: 100%; padding: 15px;">
+        {% block content %}{% endblock %}
+    </main>
+
+</body>
+</html>

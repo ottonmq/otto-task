@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="form-container-modern mx-auto">
+        <div class="form-header-modern">
+            <div class="status-dot-blink"></div>
+            <h4 class="mb-0">
+                {% if form.instance.pk %} ACTUALIZAR_REGISTRO {% else %} NUEVA_ENTRADA_SISTEMA {% endif %}
+            </h4>
+        </div>
+
+        <div class="form-body-modern">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                    <div class="mb-4">
+                        <label class="form-label-modern">{{ field.label|upper }}</label>
+                        <div class="input-wrapper-modern">
+                            {{ field }}
+                        </div>
+                        {% if field.errors %}
+                            <div class="text-danger-modern">{{ field.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <div class="d-grid gap-3 d-md-flex justify-content-md-end mt-5">
+                    <a href="{% url 'perfil' %}" class="btn-cancel-modern">CANCELAR</a>
+                    <button type="submit" class="btn-save-modern">GUARDAR_CAMBIOS >></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

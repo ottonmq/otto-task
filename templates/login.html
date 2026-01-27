@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="login-page">
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="scanner-line"></div>
+            <div class="auth-icon">O</div>
+            <h3>IDENT_AUTH_REQUIRED</h3>
+            <p>SISTEMA DE GESTIÓN DE CONSULTORIO</p>
+        </div>
+
+        <div class="auth-body">
+            <form method="POST" id="loginForm">
+                {% csrf_token %}
+                
+                <div class="input-group-system">
+                    <label>USER_ID</label>
+                    <input type="text" name="username" placeholder="Ingrese operador..." required>
+                </div>
+
+                <div class="input-group-system mt-4">
+                    <label>ACCESS_CODE</label>
+                    <input type="password" name="password" placeholder="••••••••" required>
+                </div>
+
+                <div class="d-grid mt-5">
+                    <button type="submit" class="btn-auth-system" id="loginBtn">
+                        ACCEDER_AL_SISTEMA >>
+                    </button>
+
+                    <div id="loadingContainer" class="loading-wrapper d-none">
+                        <div class="loading-text">
+                            <span>VERIFICANDO_CREDENCIALES...</span>
+                            <span id="percent">0%</span>
+                        </div>
+                        <div class="progress-track">
+                            <div id="progressBar" class="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
+            <div class="auth-footer">
+                <a href="{% url 'account_reset_password' %}" class="reset-link">¿Olvidó su código?</a>
+                <div class="status-box">
+                    <span class="status-dot-blink"></span> SISTEMA_READY
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const loginForm = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const loadingContainer = document.getElementById('

@@ -1,0 +1,21 @@
+/* Colores Modernos */
+:root {
+    --primary-bg: #ffffff;
+    --secondary-bg: #f8f9fa;
+    --text-color: #212529;
+    --accent-color: #007bff;
+    --border-color: #dee2e6;
+}
+
+[data-theme="dark"] {
+    --primary-bg: #1a1d21;
+    --secondary-bg: #24282d;
+    --text-color: #e9ecef;
+    --accent-color: #3793ff;
+    --border-color: #444c54;
+}
+
+/* Aplicación de colores */
+body { background-color: var(--primary-bg) !important; color: var(--text-color) !important; }
+#header { background: var(--secondary-bg) !important; border-bottom: 1px solid var(--border-color) !important; }
+.module { background: var(--secondary-bg) !important; border: 1px solid var(--border-color) !important; }
