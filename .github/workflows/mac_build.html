@@ -1,0 +1,36 @@
+name: Compilar Otto-task Mac
+on: [push]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Clonando el ADN del proyecto
+        uses: actions/checkout@v4
+
+      - name: Instalando Motor Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Instalando Dependencias
+        run: |
+          pip install django pyinstaller pywebview dj-database-url django-allauth djangorestframework requests pillow whitenoise PyJWT cryptography oauthlib requests-oauthlib sqlparse pytz asgiref
+
+      - name: Fabricando el Ejecutable de Mac
+        run: |
+          # Buscamos manage.py en la raiz o en la carpeta Core
+          if [ -f "manage.py" ]; then
+            pyinstaller --noconsole --onefile --name "Otto-Task-Mac" manage.py
+          elif [ -f "Core/manage.py" ]; then
+            pyinstaller --noconsole --onefile --name "Otto-Task-Mac" Core/manage.py
+          else
+            main_file=$(ls *.py | grep -v "settings.py" | head -n 1)
+            pyinstaller --noconsole --onefile --name "Otto-Task-Mac" $main_file
+          fi
+
+      - name: Entrega Final
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otto-Task-Mac-App
+          path: dist/Otto-Task-Mac
