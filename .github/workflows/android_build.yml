@@ -21,42 +21,12 @@ jobs:
 
       - name: 🏗️ Setup SDK (Fuera de la zona de limpieza)
         run: |
-          # Instalamos el SDK en una carpeta segura ($HOME)
           mkdir -p $HOME/android-sdk/cmdline-tools
           wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
           unzip commandlinetools-linux-9477386_latest.zip -d $HOME/android-sdk/cmdline-tools
           mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
-          # Grabamos las rutas para todo el proceso
           echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
           echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
 
-      - name: 🖋️ Licencias y Aidl (Ruta Blindada)
-        run: |
-          # Usamos la ruta física directa para que no diga "not found"
-          yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses || true
-          $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-34" "build-tools;34.0.0" "platform-tools"
-
-      - name: 🤖 Limpieza y Forja APK
-        run: |
-          # BORRAMOS SOLO EL CACHÉ DE BUILDER, NO EL SDK
-          rm -rf .build
-                - name: 🤖 Limpieza y Forja APK
-        run: |
-          # Borramos solo carpetas de caché para que no haya virus viejos
-          rm -rf .buildozer/
-          rm -rf bin/
-          
-          # Re-inyectamos las rutas por si el robot tiene memoria corta
-          export ANDROID_HOME=$HOME/android-sdk
-          export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
-          
-          # ¡ESTA ES LA ORDEN QUE FALTABA! El martillazo final:
-          buildozer android debug || exit 1
-
-      - name: 📦 Entrega del Botín (APK)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: Otto-Task-Nativa
-          path: bin/*.apk
-          
+      - name: 🖋️ Licencias y Aidl (
+      
