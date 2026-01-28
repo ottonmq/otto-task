@@ -1,4 +1,4 @@
-name: 🚨 OTTO-TASK-SUPER-UNIFICADO 🚨
+name: 🚨 OTTO-TASK-UNIFICADO-FINAL 🚨
 
 on:
   push:
@@ -13,13 +13,13 @@ jobs:
       - name: 🛰️ Sincronizando Rama Master
         uses: actions/checkout@v4
 
-      - name: 🛠️ Motores y Dependencias (Arreglo Base)
+      - name: 🛠️ Motores y Dependencias
         run: |
           sudo apt update
           sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev wget
           pip3 install --upgrade pip Cython==0.29.33 virtualenv buildozer
 
-      - name: 🏗️ Setup SDK Manual (Arreglo de Rutas)
+      - name: 🏗️ Setup SDK (Fuera de la zona de limpieza)
         run: |
           mkdir -p $HOME/android-sdk/cmdline-tools
           wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
@@ -28,26 +28,27 @@ jobs:
           echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
           echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
 
-      - name: 🖋️ Licencias y Aidl (Arreglo de Google 34.0.0)
+      - name: 🖋️ Licencias y Aidl (Ruta Blindada)
         run: |
-          # Aceptamos licencias y bajamos la versión 34 para evitar el error de Aidl
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses || true
           $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-34" "build-tools;34.0.0" "platform-tools"
 
-      - name: 🤖 Limpieza y Forja APK (Arreglo de Borrado de Caché)
+      - name: 🤖 Forja APK Nativa (Sin bloqueo de limpieza)
         run: |
-          # Borramos caché viejo para que no haya archivos corruptos
-          rm -rf .buildozer/
-          rm -rf bin/
+          # Si la limpieza falla porque no hay nada que borrar, que el robot siga (|| true)
+          rm -rf .buildozer/ || true
+          rm -rf bin/ || true
+          
           export ANDROID_HOME=$HOME/android-sdk
           export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
-          # Construimos el APK nativo
-          buildozer android debug || exit 1
+          
+          # Lanzamos la construcción con VERBOSE para detectar cualquier fallo real
+          buildozer --verbose android debug
 
       - name: 📦 OBTENER EL BOTÍN (Descarga de APK)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Otto-Task-APK-Final
+          name: Otto-Task-Nativa
           path: bin/*.apk
           
