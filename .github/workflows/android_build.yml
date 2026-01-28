@@ -1,34 +1,24 @@
-name: 🚨 FORJA-ANDROID-OTTO 🚨
-
+name: ANDROID-MASTER-BUILD
 on:
   push:
-    branches: [ master ]
+    branches: [ master ]  # <--- ACÁ ESTÁ EL SECRETO
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: 🛰️ Escaneando ADN del Proyecto
-        uses: actions/checkout@v4
-
-      - name: 🛠️ Preparando Herramientas Cyberpunk
-        run: |
-          sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
-          pip3 install --upgrade Cython==0.29.33 virtualenv
-
-      - name: 🤖 Iniciando Robot Buildozer
+      - uses: actions/checkout@v4
+      
+      - name: Build APK
         uses: Entepotenz/buildozer-action@v1.2.2
         with:
-          buildozer_version: master
           command: buildozer android debug
           repository_root: .
 
-      - name: 📦 Entrega de Artefacto (APK)
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: Otto-Task-Mobile
+          name: Otto-Task-APK
           path: bin/*.apk
           
