@@ -1,4 +1,4 @@
-name: 🚨 FORJA-APK-OTTO-TASK 🚨
+name: 🚨 FORJA-OTTO-TASK-FINAL 🚨
 on:
   push:
     branches: [ master ]
@@ -8,26 +8,29 @@ jobs:
   apk:
     runs-on: ubuntu-latest
     steps:
-      - name: 🛰️ Sincronizando Rama Master
+      - name: 🛰️ Sincronizando Código
         uses: actions/checkout@v4
 
-      - name: 🛠️ Reparando SSL y Dependencias Android
+      - name: 🛠️ Preparando Entorno y SSL
         run: |
           sudo apt update
           sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
-          pip3 install --upgrade pip
-          pip3 install --upgrade certifi  # <--- Esto arregla el error SSL de ayer
+          pip3 install --upgrade pip certifi
           pip3 install --upgrade Cython==0.29.33 virtualenv buildozer
 
-      - name: 🤖 Fabricando APK (Buildozer)
+      - name: 🖋️ FIRMA AUTOMÁTICA DE LICENCIAS (SOLUCIÓN)
         run: |
-          # Esto firma las licencias de Android automáticamente
+          # Esto crea la carpeta y acepta todas las licencias de Android SDK 36.1
+          mkdir -p ~/.android && touch ~/.android/repositories.cfg
           yes | sdkmanager --licenses || true
+
+      - name: 🤖 Fabricando APK de Otto-Task
+        run: |
           buildozer android debug
 
-      - name: 📦 Entrega de Otto-Task APK
+      - name: 📦 Entrega del APK
         uses: actions/upload-artifact@v4
         with:
-          name: Otto-Task-Android
+          name: Otto-Task-APK
           path: bin/*.apk
           
