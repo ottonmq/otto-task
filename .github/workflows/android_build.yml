@@ -1,24 +1,28 @@
-name: ANDROID-MASTER-BUILD
+name: ANDROID-MASTER-FINAL
 on:
   push:
-    branches: [ master ]  # <--- ACÁ ESTÁ EL SECRETO
+    branches: [ master ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Build APK
-        uses: Entepotenz/buildozer-action@v1.2.2
-        with:
-          command: buildozer android debug
-          repository_root: .
+      - name: 🛰️ Sincronizando Rama Master
+        uses: actions/checkout@v4
 
-      - name: Upload
+      - name: 🛠️ Preparando Entorno
+        run: |
+          sudo apt update
+          sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          pip3 install --upgrade Cython==0.29.33 virtualenv buildozer
+
+      - name: 🤖 Forjando APK (Buildozer)
+        run: buildozer android debug
+
+      - name: 📦 Entrega de Otto-Task
         uses: actions/upload-artifact@v4
         with:
-          name: Otto-Task-APK
+          name: Otto-APK-Master
           path: bin/*.apk
           
