@@ -1,4 +1,4 @@
-name: 🚨 OTTO-TASK-UNIFICADO-FINAL 🚨
+name: 🚨 OTTO-TASK-DEFINITIVO-FINAL 🚨
 
 on:
   push:
@@ -28,19 +28,31 @@ jobs:
           echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
           echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
 
-      - name: 🖋️ Licencias y Parche Aidl (Versión Estable 31)
+      - name: 🖋️ Licencias y Parche Aidl (Estable 31)
         run: |
-          # Aceptamos licencias de forma aislada para evitar errores de tubería
+          # Aceptamos licencias globales de Android
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses || true
-          # Instalamos la versión 31 que es la que no da problemas de Aidl
+          # Forzamos la instalación del Aidl en la versión 31 que pediste
           $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-31" "build-tools;31.0.0" "platform-tools"
 
       - name: 🤖 FORJA NATIVA (Otto-task)
         run: |
-          # Limpiamos caché viejo pero mantenemos el SDK
+          # Limpieza de rastros corruptos
           rm -rf .buildozer/ || true
           rm -rf bin/ || true
           
-          # Inyectamos rutas directo al proceso
-          export ANDROID_HOME=$HOME/android-
+          # Inyectamos rutas para que Buildozer vea el SDK
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
+          
+          # EL COMANDO DE ORO: Construcción con auto-aceptación de licencias
+          # Esto evita el "Broken Pipe" y el error de 0 segundos
+          buildozer --verbose android debug --auto-accept-sdk-license
+
+      - name: 📦 OBTENER EL BOTÍN (Descarga de APK)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otto-Task-APK-Final
+          path: bin/*.apk
           
