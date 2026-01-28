@@ -1,40 +1,33 @@
-name: 🚨 FORJA-OTTO-TASK-DEFINITIVA 🚨
-
-on:
-  push:
-    branches: [ master ]
-  workflow_dispatch:
+name: 🚨 FORJA-FINAL-OTTO 🚨
+on: [push, workflow_dispatch]
 
 jobs:
-  apk:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: 🛰️ Sincronizando Rama Master
+      - name: 🛰️ Sincronizando
         uses: actions/checkout@v4
 
-      - name: 🛠️ Reparando SSL y Entorno Linux
+      - name: 🛠️ Instalando Herramientas de Poder
         run: |
           sudo apt update
           sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
-          pip3 install --upgrade pip certifi
-          pip3 install --upgrade Cython==0.29.33 virtualenv buildozer
+          pip3 install --upgrade pip certifi Cython==0.29.33 virtualenv buildozer
 
-      - name: 🖋️ Firma de Licencias y Build-Tools (Anti-Error)
+      - name: 🖋️ Aceptando Contratos de Google
         run: |
           mkdir -p ~/.android && touch ~/.android/repositories.cfg
-          # Aceptamos licencias y forzamos la instalación de herramientas necesarias
           yes | sdkmanager --licenses || true
-          yes | sdkmanager "build-tools;34.0.0" "platforms;android-34" "platform-tools" || true
+          # Forzamos la descarga de lo que le faltaba ayer
+          yes | sdkmanager "build-tools;34.0.0" "platform-tools" "platforms;android-34" || true
 
-      - name: 🤖 Forjando el APK de Otto-Task
+      - name: 🤖 Fabricando APK (Buildozer)
         run: |
-          # Limpiamos rastros anteriores y soldamos el nuevo código
-          buildozer android clean
           buildozer android debug
 
-      - name: 📦 Entrega del Botín (APK)
+      - name: 📦 Entrega del Botín
         uses: actions/upload-artifact@v4
         with:
-          name: Otto-Task-Final-APK
+          name: Otto-Task-APK
           path: bin/*.apk
           
