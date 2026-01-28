@@ -19,7 +19,7 @@ jobs:
           sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev wget
           pip3 install --upgrade pip Cython==0.29.33 virtualenv buildozer
 
-      - name: 🏗️ Setup SDK (Fuera de la zona de limpieza)
+      - name: 🏗️ Setup SDK Blindado
         run: |
           mkdir -p $HOME/android-sdk/cmdline-tools
           wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
@@ -28,27 +28,27 @@ jobs:
           echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
           echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
 
-      - name: 🖋️ Licencias y Aidl (Ruta Blindada)
+      - name: 🖋️ Licencias y Parche Aidl
         run: |
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses || true
           $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-34" "build-tools;34.0.0" "platform-tools"
 
-      - name: 🤖 Forja APK Nativa (Sin bloqueo de limpieza)
+      - name: 🤖 FORJA NATIVA (Limpieza + Construcción)
         run: |
-          # Si la limpieza falla porque no hay nada que borrar, que el robot siga (|| true)
+          # Borramos caché corrupto
           rm -rf .buildozer/ || true
-          rm -rf bin/ || true
           
+          # Forzamos las rutas para Buildozer
           export ANDROID_HOME=$HOME/android-sdk
           export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
           
-          # Lanzamos la construcción con VERBOSE para detectar cualquier fallo real
-          buildozer --verbose android debug
+          # ACEPTAMOS LICENCIAS OTRA VEZ JUSTO ANTES DE EMPEZAR
+          yes | buildozer android debug || exit 1
 
       - name: 📦 OBTENER EL BOTÍN (Descarga de APK)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Otto-Task-Nativa
+          name: Otto-Task-APK
           path: bin/*.apk
           
