@@ -40,4 +40,23 @@ jobs:
         run: |
           # BORRAMOS SOLO EL CACHÉ DE BUILDER, NO EL SDK
           rm -rf .build
+                - name: 🤖 Limpieza y Forja APK
+        run: |
+          # Borramos solo carpetas de caché para que no haya virus viejos
+          rm -rf .buildozer/
+          rm -rf bin/
+          
+          # Re-inyectamos las rutas por si el robot tiene memoria corta
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
+          
+          # ¡ESTA ES LA ORDEN QUE FALTABA! El martillazo final:
+          buildozer android debug || exit 1
+
+      - name: 📦 Entrega del Botín (APK)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otto-Task-Nativa
+          path: bin/*.apk
           
