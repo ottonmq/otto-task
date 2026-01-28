@@ -25,5 +25,29 @@ jobs:
           wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
           unzip commandlinetools-linux-9477386_latest.zip -d $HOME/android-sdk/cmdline-tools
           mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
-          echo "ANDROID_HOME=$HOME/android-sdk"
+          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+
+      - name: 🖋️ Licencias y Aidl (Arreglo de Google 34.0.0)
+        run: |
+          # Aceptamos licencias y bajamos la versión 34 para evitar el error de Aidl
+          yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses || true
+          $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-34" "build-tools;34.0.0" "platform-tools"
+
+      - name: 🤖 Limpieza y Forja APK (Arreglo de Borrado de Caché)
+        run: |
+          # Borramos caché viejo para que no haya archivos corruptos
+          rm -rf .buildozer/
+          rm -rf bin/
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
+          # Construimos el APK nativo
+          buildozer android debug || exit 1
+
+      - name: 📦 OBTENER EL BOTÍN (Descarga de APK)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otto-Task-APK-Final
+          path: bin/*.apk
           
