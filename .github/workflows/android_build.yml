@@ -1,22 +1,22 @@
-name: SOLO-ANDROID-APK
-on: [push, workflow_dispatch]
+name: 🚨 FORJA-ANDROID-SOLO 🚨
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
-  construir_apk:
+  apk:
     runs-on: ubuntu-latest
     steps:
-      - name: Descargando ADN de Otto-task
-        uses: actions/checkout@v4
-
-      - name: Iniciando Forja de Android (Buildozer)
+      - uses: actions/checkout@v4
+      - name: Build con Buildozer
         uses: ArtemSerebrennikov/buildozer-action@v1
         with:
           command: buildozer android debug
           repository_root: .
-
-      - name: Entrega de APK Final
+      - name: Subir Resultado
         uses: actions/upload-artifact@v4
         with:
-          name: Otto-Task-MOBILE-APK
+          name: Otto-APK-Final
           path: bin/*.apk
           
