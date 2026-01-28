@@ -1,4 +1,4 @@
-name: 🚨 FORJA-FINAL-OTTO 🚨
+name: 🚨 FORJA-OTTO-DEFENSA-TOTAL 🚨
 on: [push, workflow_dispatch]
 
 jobs:
@@ -8,28 +8,26 @@ jobs:
       - name: 🛰️ Sincronizando
         uses: actions/checkout@v4
 
-      - name: 🛠️ Instalando Herramientas
+      - name: 🛠️ Instalando Android SDK Manualmente
         run: |
           sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
-          pip3 install --upgrade pip certifi Cython==0.29.33 virtualenv buildozer
+          sudo apt install -y openjdk-17-jdk wget unzip
+          # Bajamos las herramientas básicas para que NO diga "command not found"
+          mkdir -p cmdline-tools
+          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+          unzip commandlinetools-linux-9477386_latest.zip -d cmdline-tools
+          mv cmdline-tools/cmdline-tools cmdline-tools/latest
+          # Configuramos la ruta (el mapa para el robot)
+          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
 
-      - name: 🖋️ Licencias y Aidl
+      - name: 🖋️ Licencias y Aidl (Ruta Forzada)
         run: |
-          mkdir -p ~/.android && touch ~/.android/repositories.cfg
-          yes | sdkmanager --licenses || true
-          yes | sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" || true
+          yes | sdkmanager --licenses --sdk_root=$ANDROID_HOME || true
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" --sdk_root=$ANDROID_HOME
 
-      - name: 🤖 Limpieza y Forja (Aquí está el truco)
+      - name: 🤖 Fabricando APK con Buildozer
         run: |
-          # Esto borra la basura vieja en GitHub para que no falle
-          rm -rf .buildozer/ 
-          # Ahora sí, fabricamos desde cero
+          pip3 install --upgrade buildozer Cython==0.29.33 virtualenv
           buildozer android debug
-
-      - name: 📦 Entrega del APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: Otto-Task-APK
-          path: bin/*.apk
           
