@@ -1,4 +1,4 @@
-name: 🚨 OTTO-TASK-SUPER-UNIFICADO 🚨
+name: 🚨 OTTO-TASK-UNIFICADO-FINAL 🚨
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
           sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev wget
           pip3 install --upgrade pip Cython==0.29.33 virtualenv buildozer
 
-      - name: 🏗️ Setup SDK Blindado
+      - name: 🏗️ Setup SDK (Ruta Blindada)
         run: |
           mkdir -p $HOME/android-sdk/cmdline-tools
           wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
@@ -28,28 +28,19 @@ jobs:
           echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
           echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
 
-      - name: 🖋️ Licencias y Parche Aidl (Fijo en 31)
+      - name: 🖋️ Licencias y Parche Aidl (Versión Estable 31)
         run: |
+          # Aceptamos licencias de forma aislada para evitar errores de tubería
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses || true
-          # Instalamos la versión estable 31 que pediste
+          # Instalamos la versión 31 que es la que no da problemas de Aidl
           $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-31" "build-tools;31.0.0" "platform-tools"
 
-      - name: 🤖 FORJA NATIVA (Sin descargar nada extra)
+      - name: 🤖 FORJA NATIVA (Otto-task)
         run: |
-          # Limpieza radical de caché corrupto
+          # Limpiamos caché viejo pero mantenemos el SDK
           rm -rf .buildozer/ || true
+          rm -rf bin/ || true
           
-          # BLOQUEO DE RUTAS: Forzamos a Buildozer a usar nuestro SDK
-          export ANDROID_HOME=$HOME/android-sdk
-          export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
-          
-          # Ejecutamos con "yes" para saltar cualquier pregunta de la versión 36
-          yes | buildozer --verbose android debug
-
-      - name: 📦 OBTENER EL BOTÍN (Descarga de APK)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: Otto-Task-APK-Final
-          path: bin/*.apk
+          # Inyectamos rutas directo al proceso
+          export ANDROID_HOME=$HOME/android-
           
