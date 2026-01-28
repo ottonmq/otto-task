@@ -1,4 +1,5 @@
-name: 🚨 FORJA-OTTO-TASK-FINAL 🚨
+name: 🚨 FORJA-OTTO-TASK-DEFINITIVA 🚨
+
 on:
   push:
     branches: [ master ]
@@ -8,29 +9,32 @@ jobs:
   apk:
     runs-on: ubuntu-latest
     steps:
-      - name: 🛰️ Sincronizando Código
+      - name: 🛰️ Sincronizando Rama Master
         uses: actions/checkout@v4
 
-      - name: 🛠️ Preparando Entorno y SSL
+      - name: 🛠️ Reparando SSL y Entorno Linux
         run: |
           sudo apt update
           sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
           pip3 install --upgrade pip certifi
           pip3 install --upgrade Cython==0.29.33 virtualenv buildozer
 
-      - name: 🖋️ FIRMA AUTOMÁTICA DE LICENCIAS (SOLUCIÓN)
+      - name: 🖋️ Firma de Licencias y Build-Tools (Anti-Error)
         run: |
-          # Esto crea la carpeta y acepta todas las licencias de Android SDK 36.1
           mkdir -p ~/.android && touch ~/.android/repositories.cfg
+          # Aceptamos licencias y forzamos la instalación de herramientas necesarias
           yes | sdkmanager --licenses || true
+          yes | sdkmanager "build-tools;34.0.0" "platforms;android-34" "platform-tools" || true
 
-      - name: 🤖 Fabricando APK de Otto-Task
+      - name: 🤖 Forjando el APK de Otto-Task
         run: |
+          # Limpiamos rastros anteriores y soldamos el nuevo código
+          buildozer android clean
           buildozer android debug
 
-      - name: 📦 Entrega del APK
+      - name: 📦 Entrega del Botín (APK)
         uses: actions/upload-artifact@v4
         with:
-          name: Otto-Task-APK
+          name: Otto-Task-Final-APK
           path: bin/*.apk
           
