@@ -1,4 +1,4 @@
-name: OTTO_TASK_LINUX_FINAL
+name: 🚨 OTTO-TASK-UNIFICADO-FINAL 🚨
 
 on:
   push:
@@ -7,43 +7,37 @@ on:
 
 jobs:
   build:
-    # AQUÍ ESTÁ EL COMANDO CLAVE: NO MAC, SOLO UBUNTU
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     
     steps:
-      - name: 🛰️ Clonando Repositorio
+      - name: 🛰️ Sincronizando Rama Master
         uses: actions/checkout@v4
 
-      - name: 🛠️ Instalando Herramientas de Linux
+      - name: 🛠️ Motores y Dependencias
         run: |
           sudo apt update
           sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev wget
           pip3 install --upgrade pip Cython==0.29.33 virtualenv buildozer
 
-      - name: 🏗️ Setup Android SDK Manual
+      - name: 🏗️ Setup SDK (Fuera de la zona de limpieza)
         run: |
+          # Instalamos el SDK en una carpeta segura ($HOME)
           mkdir -p $HOME/android-sdk/cmdline-tools
           wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
           unzip commandlinetools-linux-9477386_latest.zip -d $HOME/android-sdk/cmdline-tools
           mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+          # Grabamos las rutas para todo el proceso
           echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
           echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
 
-      - name: 🖋️ Aceptando Contratos
+      - name: 🖋️ Licencias y Aidl (Ruta Blindada)
         run: |
+          # Usamos la ruta física directa para que no diga "not found"
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses || true
-          $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-34" "build-tools;34.0.0"
+          $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-34" "build-tools;34.0.0" "platform-tools"
 
-      - name: 🤖 Forjando APK (Sin Mac)
+      - name: 🤖 Limpieza y Forja APK
         run: |
-          rm -rf .buildozer/
-          export ANDROID_HOME=$HOME/android-sdk
-          export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
-          buildozer android debug
-
-      - name: 📦 Descargar APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: Otto-Task-APK
-          path: bin/*.apk
+          # BORRAMOS SOLO EL CACHÉ DE BUILDER, NO EL SDK
+          rm -rf .build
           
