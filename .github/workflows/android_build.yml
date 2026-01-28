@@ -32,24 +32,25 @@ jobs:
         run: |
           # Aceptamos licencias globales
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses || true
-          # FORZAMOS LA VERSIÓN ESTABLE (Android 33/34 y build-tools 33.0.x)
-          $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-33" "build-tools;33.0.1" "platform-tools"
+          # FORZAMOS LA VERSIÓN ESTABLE 31 (La más segura para Aidl)
+          $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-31" "build-tools;31.0.0" "platform-tools"
 
-      - name: 🤖 FORJA NATIVA (Versión Estable Amarrada)
+      - name: 🤖 FORJA NATIVA (Con la versión que pediste)
         run: |
-          # Limpiamos el rastro corrupto
+          # Limpiamos solo el caché para que no haya virus viejos
           rm -rf .buildozer/ || true
           
+          # Forzamos las rutas para que reconozca el Aidl que instalamos arriba
           export ANDROID_HOME=$HOME/android-sdk
           export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
           
-          # FORZAMOS A BUILDOZER A USAR LA VERSIÓN ESTABLE QUE YA BAJAMOS
+          # USAMOS EL "YES" PARA QUE NADA NOS DETENGA
           yes | buildozer --verbose android debug
 
       - name: 📦 OBTENER EL BOTÍN (Descarga de APK)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Otto-Task-APK-Estable
+          name: Otto-Task-APK-Nativo
           path: bin/*.apk
           
