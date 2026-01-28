@@ -1,33 +1,33 @@
-name: 🚨 FORJA-CYBERPUNK-FINAL 🚨
+name: 🚨 FORJA-FINAL-OTTO 🚨
 on: [push, workflow_dispatch]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: 🛰️ Sincronizando Otto-task
+      - name: 🛰️ Sincronizando
         uses: actions/checkout@v4
 
-      - name: 🛠️ Preparando Motores
+      - name: 🛠️ Instalando Herramientas
         run: |
           sudo apt update
           sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
           pip3 install --upgrade pip certifi Cython==0.29.33 virtualenv buildozer
 
-      - name: 🖋️ Aceptando Contratos de Google (Anti-Aidl Error)
+      - name: 🖋️ Licencias y Aidl
         run: |
           mkdir -p ~/.android && touch ~/.android/repositories.cfg
-          # Aceptamos todas las licencias y bajamos la versión 34 que es más estable
           yes | sdkmanager --licenses || true
           yes | sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" || true
 
-      - name: 🤖 Fabricando APK
+      - name: 🤖 Limpieza y Forja (Aquí está el truco)
         run: |
-          # Limpiamos para que no busque carpetas inexistentes
-          buildozer android clean
+          # Esto borra la basura vieja en GitHub para que no falle
+          rm -rf .buildozer/ 
+          # Ahora sí, fabricamos desde cero
           buildozer android debug
 
-      - name: 📦 Entrega del Botín
+      - name: 📦 Entrega del APK
         uses: actions/upload-artifact@v4
         with:
           name: Otto-Task-APK
