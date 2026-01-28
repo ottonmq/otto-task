@@ -1,4 +1,4 @@
-name: 🚨 FORJA-OTTO-TASK 🚨
+name: 🚨 FORJA-OTTO-TASK-ANDROID 🚨
 on:
   push:
     branches: [ master ]
@@ -6,30 +6,30 @@ on:
 
 jobs:
   apk:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Usamos Linux para crear Android, no Mac
     steps:
       - name: 🛰️ Sincronizando Rama Master
         uses: actions/checkout@v4
 
-      - name: 🛠️ Preparando Entorno y Licencias
+      - name: 🛠️ Limpiando y Reparando Paquetes
         run: |
           sudo apt update
-          # Eliminamos libtinfo5 porque ya no existe en los servidores
+          # Instalamos solo lo que Ubuntu tiene disponible hoy en 2026
           sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
           pip3 install --upgrade Cython==0.29.33 virtualenv buildozer
-          # Firma automática de licencias de Android para evitar el error 36.1
-          mkdir -p ~/.android && touch ~/.android/repositories.cfg
+
+      - name: 🖋️ Firmando Licencias de Google
+        run: |
+          # Esto evita que el robot se detenga por permisos de Android SDK
           yes | sdkmanager --licenses || true
 
-      - name: 🤖 Forjando APK (Buildozer)
+      - name: 🤖 Forjando APK de Otto-Task
         run: |
-          sudo chown -R $USER:$USER .
-          # Forzamos a Buildozer a usar una versión estable de herramientas
           buildozer android debug
 
-      - name: 📦 Entrega de Otto-Task
+      - name: 📦 Entrega del APK
         uses: actions/upload-artifact@v4
         with:
-          name: Otto-APK-Final
+          name: Otto-Task-Final
           path: bin/*.apk
           
