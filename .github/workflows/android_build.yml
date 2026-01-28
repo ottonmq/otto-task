@@ -1,29 +1,22 @@
-name: Compilar Otto-task APK
-on:
-  push:
-    branches: [ master ]  # <--- TIENE QUE SER MASTER (como se ve en tus fotos)
-  workflow_dispatch:      # <--- ESTO NOS DEJA ARRANCARLO A MANO
+name: SOLO-ANDROID-APK
+on: [push, workflow_dispatch]
 
 jobs:
-  build:
+  construir_apk:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Instalar dependencias
-        run: |
-          sudo apt-get update
-          sudo apt-get install -path python3-pip build-essential git python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev
+      - name: Descargando ADN de Otto-task
+        uses: actions/checkout@v4
 
-      - name: Build with Buildozer
+      - name: Iniciando Forja de Android (Buildozer)
         uses: ArtemSerebrennikov/buildozer-action@v1
         with:
           command: buildozer android debug
           repository_root: .
 
-      - name: Subir APK
+      - name: Entrega de APK Final
         uses: actions/upload-artifact@v4
         with:
-          name: Otto-Task-Android-APK
+          name: Otto-Task-MOBILE-APK
           path: bin/*.apk
           
