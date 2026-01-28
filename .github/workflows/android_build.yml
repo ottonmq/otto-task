@@ -1,22 +1,34 @@
-name: 🚨 FORJA-ANDROID-SOLO 🚨
+name: 🚨 FORJA-ANDROID-OTTO 🚨
+
 on:
   push:
     branches: [ master ]
   workflow_dispatch:
 
 jobs:
-  apk:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Build con Buildozer
-        uses: ArtemSerebrennikov/buildozer-action@v1
+      - name: 🛰️ Escaneando ADN del Proyecto
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Preparando Herramientas Cyberpunk
+        run: |
+          sudo apt update
+          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          pip3 install --upgrade Cython==0.29.33 virtualenv
+
+      - name: 🤖 Iniciando Robot Buildozer
+        uses: Entepotenz/buildozer-action@v1.2.2
         with:
+          buildozer_version: master
           command: buildozer android debug
           repository_root: .
-      - name: Subir Resultado
+
+      - name: 📦 Entrega de Artefacto (APK)
         uses: actions/upload-artifact@v4
         with:
-          name: Otto-APK-Final
+          name: Otto-Task-Mobile
           path: bin/*.apk
           
