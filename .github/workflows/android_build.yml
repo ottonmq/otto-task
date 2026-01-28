@@ -1,4 +1,4 @@
-name: 🚨 FORJA-OTTO-TASK-DEFINITIVA 🚨
+name: 🚨 FORJA-OTTO-TASK-ULTIMATUM 🚨
 
 on:
   push:
@@ -9,43 +9,45 @@ jobs:
   apk:
     runs-on: ubuntu-latest
     steps:
-      - name: 🛰️ Sincronizando Código de Otto-task
+      - name: 🛰️ Sincronizando Rama Master
         uses: actions/checkout@v4
 
-      - name: 🛠️ Instalando Motores (Java y Herramientas)
+      - name: 🛠️ Instalando Motores Base
         run: |
           sudo apt update
           sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev wget
           pip3 install --upgrade pip certifi Cython==0.29.33 virtualenv buildozer
 
-      - name: 🏗️ Descarga Manual del SDK (Anti-Error 127)
+      - name: 🏗️ Descarga e Instalación Manual del SDK
         run: |
+          # Creamos la carpeta del SDK y bajamos las herramientas de Google
           mkdir -p $HOME/android-sdk/cmdline-tools
           wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
           unzip commandlinetools-linux-9477386_latest.zip -d $HOME/android-sdk/cmdline-tools
           mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+          
+          # Definimos las variables de entorno para que el sistema sepa dónde están
+          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin:$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
 
-      - name: 🖋️ Firmando Licencias de Google
+      - name: 🖋️ Licencias y Preparación de Aidl
         run: |
-          # Definimos la ruta de las herramientas para este paso
-          export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
-          export ANDROID_HOME=$HOME/android-sdk
-          yes | sdkmanager --licenses --sdk_root=$ANDROID_HOME || true
-          sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools" --sdk_root=$ANDROID_HOME
+          # Usamos rutas absolutas para evitar el error "command not found"
+          $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses <<< "y"
+          $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-34" "build-tools;34.0.0" "platform-tools"
 
-      - name: 🤖 Forjando el APK Nativo
+      - name: 🤖 Fabricando APK (Otto-task Nativa)
         run: |
-          # Limpieza profunda de archivos fantasma
+          # Limpieza total de intentos fallidos anteriores
           rm -rf .buildozer/
-          # Inyectamos las rutas de nuevo para que Buildozer sepa dónde está el martillo
-          export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
+          # Forzamos a Buildozer a usar nuestro SDK manual
           export ANDROID_HOME=$HOME/android-sdk
-          # Iniciamos la construcción con el mapa forzado
+          export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
           buildozer android debug
 
       - name: 📦 Entrega del Botín (APK)
         uses: actions/upload-artifact@v4
         with:
-          name: Otto-Task-Cyber-APK
+          name: Otto-Task-APK-Final
           path: bin/*.apk
           
