@@ -1,4 +1,4 @@
-name: 🚨 OTTO-TASK-DEFINITIVO-FINAL 🚨
+name: 🚨 OTTO-TASK-FINAL-STABLE 🚨
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: 🛰️ Sincronizando Rama Master
+      - name: 🛰️ Sincronizando Código
         uses: actions/checkout@v4
 
       - name: 🛠️ Motores y Dependencias
@@ -19,7 +19,7 @@ jobs:
           sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev wget
           pip3 install --upgrade pip Cython==0.29.33 virtualenv buildozer
 
-      - name: 🏗️ Setup SDK (Ruta Blindada)
+      - name: 🏗️ Setup SDK Blindado (Ruta Fija)
         run: |
           mkdir -p $HOME/android-sdk/cmdline-tools
           wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
@@ -30,26 +30,24 @@ jobs:
 
       - name: 🖋️ Licencias y Parche Aidl (Estable 31)
         run: |
-          # Aceptamos licencias globales de Android
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses || true
-          # Forzamos la instalación del Aidl en la versión 31 que pediste
           $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-31" "build-tools;31.0.0" "platform-tools"
 
-      - name: 🤖 FORJA NATIVA (Otto-task)
+      - name: 🤖 FORJA NATIVA (Sin errores de ruta)
         run: |
-          # Limpieza de rastros corruptos
+          # Limpiamos caché para asegurar una forja limpia
           rm -rf .buildozer/ || true
           rm -rf bin/ || true
           
-          # Inyectamos rutas para que Buildozer vea el SDK
+          # Forzamos las rutas para que Buildozer no busque versiones nuevas (36)
           export ANDROID_HOME=$HOME/android-sdk
           export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
           
-          # EL COMANDO DE ORO: Construcción con auto-aceptación de licencias
-          # Esto evita el "Broken Pipe" y el error de 0 segundos
-          buildozer --verbose android debug --auto-accept-sdk-license
+          # EJECUCIÓN CON PERMISOS TOTALES
+          # Usamos --auto-accept-sdk-license para evitar el bloqueo de Aidl
+          buildozer --verbose android debug --auto-accept-sdk-license || exit 1
 
-      - name: 📦 OBTENER EL BOTÍN (Descarga de APK)
+      - name: 📦 OBTENER EL BOTÍN (APK)
         if: always()
         uses: actions/upload-artifact@v4
         with:
