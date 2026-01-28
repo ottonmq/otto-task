@@ -28,27 +28,28 @@ jobs:
           echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
           echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
 
-      - name: 🖋️ Licencias y Parche Aidl
+      - name: 🖋️ Licencias y Parche Aidl (Versión Estable)
         run: |
+          # Aceptamos licencias globales
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses || true
-          $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-34" "build-tools;34.0.0" "platform-tools"
+          # FORZAMOS LA VERSIÓN ESTABLE (Android 33/34 y build-tools 33.0.x)
+          $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-33" "build-tools;33.0.1" "platform-tools"
 
-      - name: 🤖 FORJA NATIVA (Limpieza + Construcción)
+      - name: 🤖 FORJA NATIVA (Versión Estable Amarrada)
         run: |
-          # Borramos caché corrupto
+          # Limpiamos el rastro corrupto
           rm -rf .buildozer/ || true
           
-          # Forzamos las rutas para Buildozer
           export ANDROID_HOME=$HOME/android-sdk
           export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
           
-          # ACEPTAMOS LICENCIAS OTRA VEZ JUSTO ANTES DE EMPEZAR
-          yes | buildozer android debug || exit 1
+          # FORZAMOS A BUILDOZER A USAR LA VERSIÓN ESTABLE QUE YA BAJAMOS
+          yes | buildozer --verbose android debug
 
       - name: 📦 OBTENER EL BOTÍN (Descarga de APK)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Otto-Task-APK
+          name: Otto-Task-APK-Estable
           path: bin/*.apk
           
