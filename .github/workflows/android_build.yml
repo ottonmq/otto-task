@@ -1,4 +1,4 @@
-name: 🚨 FORJA-LINUX-OTTO-TASK 🚨
+name: OTTO_TASK_LINUX_FINAL
 
 on:
   push:
@@ -6,19 +6,44 @@ on:
   workflow_dispatch:
 
 jobs:
-  apk:
-    # AQUÍ ESTÁ EL ARREGLO: USAMOS UBUNTU, NO MAC
-    runs-on: ubuntu-latest
+  build:
+    # AQUÍ ESTÁ EL COMANDO CLAVE: NO MAC, SOLO UBUNTU
+    runs-on: ubuntu-22.04
     
     steps:
-      - name: 🛰️ Sincronizando Rama Master
+      - name: 🛰️ Clonando Repositorio
         uses: actions/checkout@v4
 
-      - name: 🛠️ Motores Base (Linux)
+      - name: 🛠️ Instalando Herramientas de Linux
         run: |
           sudo apt update
           sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev wget
-          pip3 install --upgrade pip certifi Cython==0.29.33 virtualenv buildozer
+          pip3 install --upgrade pip Cython==0.29.33 virtualenv buildozer
 
-      -
-      
+      - name: 🏗️ Setup Android SDK Manual
+        run: |
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+          unzip commandlinetools-linux-9477386_latest.zip -d $HOME/android-sdk/cmdline-tools
+          mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+
+      - name: 🖋️ Aceptando Contratos
+        run: |
+          yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses || true
+          $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-34" "build-tools;34.0.0"
+
+      - name: 🤖 Forjando APK (Sin Mac)
+        run: |
+          rm -rf .buildozer/
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
+          buildozer android debug
+
+      - name: 📦 Descargar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otto-Task-APK
+          path: bin/*.apk
+          
