@@ -1,4 +1,4 @@
-name: 🚨 FORJA-ANDROID-SOLO 🚨
+name: 🚨 FORJA-OTTO-TASK 🚨
 on:
   push:
     branches: [ master ]
@@ -14,15 +14,17 @@ jobs:
       - name: 🛠️ Preparando Entorno y Licencias
         run: |
           sudo apt update
+          # Eliminamos libtinfo5 porque ya no existe en los servidores
           sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
           pip3 install --upgrade Cython==0.29.33 virtualenv buildozer
-          # Aceptar licencias de Android automáticamente
+          # Firma automática de licencias de Android para evitar el error 36.1
           mkdir -p ~/.android && touch ~/.android/repositories.cfg
           yes | sdkmanager --licenses || true
 
       - name: 🤖 Forjando APK (Buildozer)
         run: |
           sudo chown -R $USER:$USER .
+          # Forzamos a Buildozer a usar una versión estable de herramientas
           buildozer android debug
 
       - name: 📦 Entrega de Otto-Task
