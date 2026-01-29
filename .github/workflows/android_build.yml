@@ -25,26 +25,30 @@ jobs:
           wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
           unzip commandlinetools-linux-9477386_latest.zip -d $HOME/android-sdk/cmdline-tools
           mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+          # Definimos las variables de entorno para todo el sistema
           echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
           echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
 
       - name: 🖋️ Licencias y Parche Aidl (Estable 31)
         run: |
+          # Aceptamos licencias globales
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses || true
+          # Instalamos la 31 y platform-tools donde está el Aidl real
           $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-31" "build-tools;31.0.0" "platform-tools"
 
-      - name: 🤖 FORJA NATIVA (Sin errores de ruta)
+      - name: 🤖 FORJA NATIVA (Sin errores de Aidl)
         run: |
-          # Limpiamos caché para asegurar una forja limpia
+          # Limpieza obligatoria de intentos fallidos
           rm -rf .buildozer/ || true
           rm -rf bin/ || true
           
-          # Forzamos las rutas para que Buildozer no busque versiones nuevas (36)
+          # FORZAMOS A BUILDOZER A USAR NUESTRO SDK (Aquí es donde fallaba)
           export ANDROID_HOME=$HOME/android-sdk
+          export ANDROID_SDK_ROOT=$HOME/android-sdk
           export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
           
-          # EJECUCIÓN CON PERMISOS TOTALES
-          # Usamos --auto-accept-sdk-license para evitar el bloqueo de Aidl
+          # EJECUCIÓN CON SALTO DE LICENCIAS INTERNO
           buildozer --verbose android debug --auto-accept-sdk-license || exit 1
 
       - name: 📦 OBTENER EL BOTÍN (APK)
