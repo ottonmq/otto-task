@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4 mb-5">
+    <div class="card bg-dark border-info shadow-neon" style="border-radius: 0;">
+        <div class="card-header border-info bg-black text-center py-3">
+            <h2 class="text-info fw-bold" style="letter-spacing: 5px;">
+                [ REGISTRO DE PRODUCTO ]
+            </h2>
+        </div>
+        <div class="card-body p-4">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="row text-white">
+                    {% for field in form %}
+                    <div class="col-md-6 mb-4">
+                        <label class="text-info small fw-bold mb-2">
+                            > {{ field.label|upper }}
+                        </label>
+                        <div class="cyber-input">
+                            {{ field }}
+                        </div>
+                        {% if field.errors %}
+                            <div class="text-danger x-small mt-1">!! ERROR: {{ field.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-4 border-top border-secondary pt-4">
+                    <button type="submit" class="btn btn-info w-100 py-3 fw-bold shadow-neon text-uppercase">
+                        Inyectar datos en el mercado
+                    </button>
+                    <a href="{% url 'perfil' %}" class="btn btn-outline-secondary w-100 mt-3 py-2">
+                        Abortar operación
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Estilo para que los inputs no se vean normales */
+    input, select, textarea {
+        background-color: #000 !important;
+        border: 1px solid #0dcaf0 !important;
+        color: #0dcaf0 !important;
+        width: 100%;
+        padding: 10px;
+    }
+    input:focus {
+        box-shadow: 0 0 10px #0dcaf0 !important;
+        outline: none;
+    }
+</style>
+{% endblock %}

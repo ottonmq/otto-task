@@ -2,46 +2,82 @@
 
 {% block content %}
 <div class="container mt-4">
-    <div class="profile-header-card">
-        <div class="avatar-scanner">
-            <div class="rotating-light"></div>
+    <div class="profile-header-card" style="background: #111; border: 1px solid #2e89ff; padding: 20px; border-radius: 15px; display: flex; align-items: center; gap: 20px;">
+        <div class="avatar-scanner" style="position: relative; width: 80px; height: 80px;">
+            <div class="rotating-light" style="position: absolute; width: 100%; height: 100%; border: 2px solid #2e89ff; border-radius: 50%; border-top-color: transparent; animation: spin 2s linear infinite;"></div>
             {% if user.socialaccount_set.all %}
-                <img src="{{ user.socialaccount_set.all.0.get_avatar_url }}" class="profile-circle-img">
+                <img src="{{ user.socialaccount_set.all.0.get_avatar_url }}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
             {% else %}
-                <div class="profile-circle-img">{{ user.username|slice:":1"|upper }}</div>
+                <div style="width: 100%; height: 100%; background: #222; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #2e89ff; font-weight: bold; font-size: 24px;">
+                    {{ user.username|slice:":1"|upper }}
+                </div>
             {% endif %}
         </div>
         
         <div class="info-section">
-            <h2 class="profile-name">{{ user.first_name|default:user.username }}</h2>
-            <p class="profile-meta">SISTEMA_ACTIVO // {{ user.date_joined|date:"M Y" }}</p>
-            <span class="badge-verified">Vendedor Verificado</span>
+            <h2 style="color: #fff; margin: 0; font-size: 20px;">{{ user.username|upper }}</h2>
+            <p style="color: #2e89ff; font-size: 10px; margin: 0;">SISTEMA_ACTIVO // STATUS: ONLINE</p>
         </div>
     </div>
 
-    <h4 class="mt-5 mb-4 text-accent">MIS_PUBLICACIONES</h4>
+    <h4 class="mt-5 mb-4" style="color: #2e89ff; font-size: 14px; letter-spacing: 2px;">MIS_PUBLICACIONES_EN_RADAR</h4>
+    
     <div class="row g-3">
         {% for v in mis_anuncios %}
         <div class="col-12 col-md-6">
-            <div class="card-item-horizontal">
-                <div class="img-mini">
-                    {% if v.foto %} <img src="{{ v.foto.url }}"> {% endif %}
+            <div class="card-item-horizontal" style="background: #16181a; border: 1px solid #2d3136; border-radius: 10px; display: flex; overflow: hidden; height: 100px;">
+                <div class="img-mini" style="width: 100px; background: #000;">
+                    {% if v.foto %} 
+                        <img src="{{ v.foto.url }}" style="width: 100%; height: 100%; object-fit: cover;"> 
+                    {% else %}
+                        <div style="color: #444; font-size: 9px; text-align: center; padding-top: 40px;">NO_IMAGE</div>
+                    {% endif %}
                 </div>
-                <div class="card-info">
+                <div class="card-info" style="flex: 1; padding: 12px; display: flex; flex-direction: column; justify-content: space-between;">
                     <div class="d-flex justify-content-between">
-                        <span class="price">${{ v.precio }}</span>
+                        <span style="color: #00ff41; font-weight: bold;">${{ v.precio }}</span>
                         <div class="actions">
-                            <a href="{% url 'gestionar_anuncio' v.pk %}">⚙️</a>
-                            <a href="{% url 'eliminar_anuncio' v.pk %}" class="text-danger">✕</a>
+                         
+                        <div style="display: flex; gap: 10px; align-items: center;">
+
+    <a href="{% url 'editar_anuncio' v.pk %}" 
+       style="background: rgba(0, 251, 255, 0.1); border: 1px solid #00fbff; color: #00fbff; padding: 6px 10px; border-radius: 4px; text-decoration: none; box-shadow: 0 0 8px rgba(0, 251, 255, 0.4);"
+       onclick="showOttoNotification('RECALIBRANDO SISTEMA...', 'info')">
+        <i class="bi bi-pencil-square"></i>
+    </a>
+
+    <form action="{% url 'eliminar_anuncio' v.pk %}" method="post" style="margin: 0;">
+        {% csrf_token %}
+        <button type="submit" 
+                style="background: rgba(255, 0, 85, 0.1); border: 1px solid #ff0055; color: #ff0055; padding: 6px 10px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 8px rgba(255, 0, 85, 0.4);"
+                onclick="return confirm('¿ELIMINAR REGISTRO?')">
+            <i class="bi bi-trash3-fill"></i>
+        </button>
+    </form>
+
+</div>
+ 
+                         
+                         
+                         
+                         
                         </div>
                     </div>
-                    <div class="title">{{ v.titulo }}</div>
+                    <div style="color: #fff; font-size: 13px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        {{ v.titulo }}
+                    </div>
                 </div>
             </div>
         </div>
         {% empty %}
-        <div class="col-12 text-center py-5 text-muted">[ NO_DATA_DETECTED ]</div>
+        <div class="col-12 text-center py-5 text-muted" style="border: 1px dashed #2d3136; border-radius: 10px;">
+            [ NO_DATA_DETECTED_IN_SECTOR ]
+        </div>
         {% endfor %}
     </div>
 </div>
+
+<style>
+@keyframes spin { 100% { transform: rotate(360deg); } }
+</style>
 {% endblock %}

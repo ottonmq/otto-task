@@ -1,161 +1,143 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-4">
-    <h3 class="fw-bold mb-4">Panel de Control de Ventas</h3>
+<div class="container mt-4 otto-dashboard">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="cyber-title">PANEL_DE_CONTROL // VENTAS</h3>
+        <span class="badge-status">SISTEMA_OPERATIVO</span>
+    </div>
     
-    <div class="row mb-5">
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm p-3" style="border-left: 5px solid #1a73e8; border-radius: 10px;">
-                <small class="text-muted text-uppercase fw-bold" style="font-size: 10px;">Vistas Totales</small>
-                <h2 class="fw-bold mb-0">1,254</h2>
-                <small class="text-success">↑ 12% este mes</small>
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="cyber-card neon-blue">
+                <small class="label">VISTAS_TOTALES</small>
+                <h2 class="value">1,254</h2>
+                <small class="trend-up">↑ 12% RATE_UP</small>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm p-3" style="border-left: 5px solid #28a745; border-radius: 10px;">
-                <small class="text-muted text-uppercase fw-bold" style="font-size: 10px;">Ingresos Estimados</small>
-                <h2 class="fw-bold mb-0">$42,800</h2>
-                <small class="text-muted">3 propiedades activas</small>
+        <div class="col-md-3 mb-3">
+            <div class="cyber-card neon-green">
+                <small class="label">INGRESOS_ESTIMADOS</small>
+                <h2 class="value">$42,800</h2>
+                <small class="sub-label">3 PROPS_ACTIVE</small>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm p-3" style="border-left: 5px solid #ffc107; border-radius: 10px;">
-                <small class="text-muted text-uppercase fw-bold" style="font-size: 10px;">Mensajes</small>
-                <h2 class="fw-bold mb-0">18</h2>
-                <small class="text-warning">5 sin leer</small>
+        <div class="col-md-3 mb-3">
+            <div class="cyber-card neon-yellow">
+                <small class="label">MENSAJES_INBOX</small>
+                <h2 class="value">18</h2>
+                <small class="trend-warning">5 UNREAD_MSG</small>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm p-3" style="border-left: 5px solid #dc3545; border-radius: 10px;">
-                <small class="text-muted text-uppercase fw-bold" style="font-size: 10px;">Anuncios Vencidos</small>
-                <h2 class="fw-bold mb-0">0</h2>
-                <small class="text-muted">Todo al día</small>
+        <div class="col-md-3 mb-3">
+            <div class="cyber-card neon-red">
+                <small class="label">ANUNCIOS_VENCIDOS</small>
+                <h2 class="value">0</h2>
+                <small class="sub-label">CLEAN_STATUS</small>
             </div>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-8">
-            <div class="card border-0 shadow-sm p-4" style="height: 300px; border-radius: 15px;">
-                <h6 class="fw-bold mb-4">Rendimiento de tus publicaciones (7 días)</h6>
-                <div class="d-flex align-items-end justify-content-between h-100 px-4">
-                    <div style="width: 40px; height: 40%; background: #e9ecef; border-radius: 5px 5px 0 0;"></div>
-                    <div style="width: 40px; height: 60%; background: #e9ecef; border-radius: 5px 5px 0 0;"></div>
-                    <div style="width: 40px; height: 90%; background: #1a73e8; border-radius: 5px 5px 0 0;"></div>
-                    <div style="width: 40px; height: 50%; background: #e9ecef; border-radius: 5px 5px 0 0;"></div>
-                    <div style="width: 40px; height: 75%; background: #1a73e8; border-radius: 5px 5px 0 0;"></div>
+        <div class="col-md-8 mb-4">
+            <div class="cyber-card main-chart-box">
+                <h6 class="label mb-4">RENDIMIENTO_SEMANAL (7D_SCAN)</h6>
+                <div style="height: 300px;">
+                    <canvas id="graficoVentas"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm p-4" style="border-radius: 15px;">
-                <h6 class="fw-bold mb-3">Actividad Reciente</h6>
-                <ul class="list-unstyled" style="font-size: 13px;">
-                    <li class="mb-3">✅ <strong>Vendido:</strong> Hilux 2022 hace 2h</li>
-                    <li class="mb-3">💬 <strong>Mensaje:</strong> Preguntaron por la Casa hace 4h</li>
-                    <li class="mb-3">👀 <strong>Nuevo hito:</strong> 500 vistas en anuncio</li>
+        <div class="col-md-4 mb-4">
+            <div class="cyber-card activity-box">
+                <h6 class="label mb-3">LOG_DE_ACTIVIDAD</h6>
+                <ul class="activity-list">
+                    <li><span class="tag green">VENDIDO</span> Hilux 2022 // 2h</li>
+                    <li><span class="tag blue">MSG</span> Consulta Casa // 4h</li>
+                    <li><span class="tag yellow">MILE</span> 500 Vistas Alcanzadas</li>
                 </ul>
             </div>
         </div>
     </div>
 </div>
 
+<style>
+    :root {
+        --dark-bg: #0a0a0c;
+        --card-bg: #121214;
+        --neon-blue: #00f3ff;
+        --neon-green: #39ff14;
+        --neon-yellow: #fff01f;
+        --neon-red: #ff0055;
+    }
 
-<div class="row mt-4">
-    <div class="col-12">
-        <div class="card border-0 shadow-sm p-4" style="border-radius: 15px;">
-            <h6 class="fw-bold mb-4 text-primary">Rendimiento Semanal de mis Publicaciones</h6>
-            <div style="position: relative; height:30vh; width:100%">
-                <canvas id="graficoVentas"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
+    body { background-color: var(--dark-bg) !important; color: #e0e0e0; }
+
+    .cyber-title {
+        color: var(--neon-blue);
+        font-family: 'Orbitron', sans-serif;
+        font-size: 1.2rem;
+        text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+    }
+
+    .cyber-card {
+        background: var(--card-bg);
+        border: 1px solid #222;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+        clip-path: polygon(0 0, 100% 0, 100% 85%, 92% 100%, 0 100%);
+    }
+
+    /* Variantes de Color Neon */
+    .neon-blue { border-left: 4px solid var(--neon-blue); box-shadow: inset 5px 0 15px -5px rgba(0, 243, 255, 0.2); }
+    .neon-green { border-left: 4px solid var(--neon-green); box-shadow: inset 5px 0 15px -5px rgba(57, 255, 20, 0.2); }
+    .neon-yellow { border-left: 4px solid var(--neon-yellow); box-shadow: inset 5px 0 15px -5px rgba(255, 240, 31, 0.2); }
+    .neon-red { border-left: 4px solid var(--neon-red); box-shadow: inset 5px 0 15px -5px rgba(255, 0, 85, 0.2); }
+
+    .label { font-family: 'Monospace'; font-size: 10px; color: #888; letter-spacing: 1px; display: block; }
+    .value { font-family: 'Orbitron', sans-serif; font-weight: 900; margin: 5px 0; color: #fff; }
+    
+    .trend-up { color: var(--neon-green); font-size: 11px; }
+    .trend-warning { color: var(--neon-yellow); font-size: 11px; }
+    .sub-label { color: #555; font-size: 11px; }
+
+    .activity-list { list-style: none; padding: 0; font-size: 12px; font-family: 'Monospace'; }
+    .activity-list li { margin-bottom: 15px; color: #bbb; }
+    .tag { padding: 2px 6px; border-radius: 3px; font-size: 9px; font-weight: bold; margin-right: 8px; }
+    .tag.green { background: rgba(57, 255, 20, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green); }
+    .tag.blue { background: rgba(0, 243, 255, 0.1); color: var(--neon-blue); border: 1px solid var(--neon-blue); }
+    .tag.yellow { background: rgba(255, 240, 31, 0.1); color: var(--neon-yellow); border: 1px solid var(--neon-yellow); }
+</style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
     const ctx = document.getElementById('graficoVentas').getContext('2d');
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'],
+            labels: ['LUN', 'MAR', 'MIE', 'JUE', 'VIE', 'SAB', 'DOM'],
             datasets: [{
-                label: 'Vistas de anuncios',
-                data: [120, 190, 300, 250, 400, 550, 620], // Estos datos luego vendrán de Django
-                borderColor: '#1a73e8',
-                backgroundColor: 'rgba(26, 115, 232, 0.1)',
+                label: 'VISTAS',
+                data: [120, 190, 300, 250, 400, 550, 620],
+                borderColor: '#00f3ff',
+                backgroundColor: 'rgba(0, 243, 255, 0.05)',
                 fill: true,
                 tension: 0.4,
-                borderWidth: 3,
-                pointRadius: 5,
-                pointBackgroundColor: '#1a73e8'
+                borderWidth: 2,
+                pointBackgroundColor: '#00f3ff',
+                pointRadius: 0,
+                pointHoverRadius: 6
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
-            },
+            plugins: { legend: { display: false } },
             scales: {
-                y: { beginAtZero: true, grid: { display: false } },
-                x: { grid: { display: false } }
+                y: { grid: { color: '#222' }, ticks: { color: '#555', font: { family: 'Monospace' } } },
+                x: { grid: { display: false }, ticks: { color: '#555', font: { family: 'Monospace' } } }
             }
         }
     });
 </script>
-
-<div class="row mt-4 mb-5">
-    <div class="col-md-5">
-        <div class="card border-0 shadow-sm p-4" style="border-radius: 15px; height: 100%;">
-            <h6 class="fw-bold mb-4">Distribución de mis Anuncios</h6>
-            <div style="position: relative; height:250px;">
-                <canvas id="graficoCircular"></canvas>
-            </div>
-            <div class="mt-3 text-center">
-                <small class="text-muted">Total: 15 Publicaciones activas</small>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-7">
-        <div class="card border-0 shadow-sm p-4" style="border-radius: 15px; height: 100%; background: linear-gradient(135deg, #1a73e8, #0d47a1); color: white;">
-            <h5 class="fw-bold">Consejo de Venta 💡</h5>
-            <p class="mt-3">Tus anuncios de <strong>Vehículos</strong> tienen un 40% más de vistas los fines de semana. ¡Aprovechá para destacar tus publicaciones los viernes!</p>
-            <button class="btn btn-light btn-sm mt-auto" style="width: fit-content;">Ver sugerencias</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Configuración del Gráfico Circular (Doughnut)
-    const ctxCircle = document.getElementById('graficoCircular').getContext('2d');
-    new Chart(ctxCircle, {
-        type: 'doughnut',
-        data: {
-            labels: ['Vehículos', 'Casas', 'Otros'],
-            datasets: [{
-                data: [8, 4, 3], // Cantidad de anuncios por categoría
-                backgroundColor: ['#1a73e8', '#34a853', '#fbbc04'],
-                hoverOffset: 10,
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: { usePointStyle: true, padding: 20 }
-                }
-            },
-            cutout: '70%' // Esto lo hace ver como una "dona" moderna
-        }
-    });
-</script>
-
-
 {% endblock %}

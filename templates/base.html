@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load socialaccount %}
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -61,38 +62,590 @@
 <body>
 
     <header class="nav-otto">
-        <a href="/" class="logo">OTTO-MARKET</a>
-        <div class="d-flex align-items-center gap-2">
-            {% if not user.is_authenticated %}
-                <a href="/accounts/google/login/" class="google-btn">GOOGLE</a>
+
+<h1 class="otto-logo-live">OTTO MARKET</h1>
+
+<style>
+    .otto-logo-live {
+        color: #00f3ff;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 900;
+        letter-spacing: 5px;
+        text-shadow: 0 0 10px rgba(0, 243, 255, 0.7), 
+                     0 0 20px rgba(0, 243, 255, 0.5);
+        animation: neon-flicker 3s infinite;
+        position: relative;
+    }
+
+    @keyframes neon-flicker {
+        0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.7), 0 0 20px rgba(0, 243, 255, 0.5);
+            opacity: 1;
+        }
+        20%, 22%, 24%, 55% {
+            text-shadow: none;
+            opacity: 0.5;
+        }
+    }
+</style>
+
+
+
+
+    {% if not user.is_authenticated %}
+
+<a href="{% provider_login_url 'google' %}" class="google-tech-btn">
+    <div class="google-header">
+        <<img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" class="g-logo">
+
+        <span class="g-text">GOOGLE LOGIN</span>
+    </div>
+    <div class="google-bar"></div>
+</a>
+
+<style>
+    .google-tech-btn {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 55px;
+        background: #080808;
+        border: 1px solid #333;
+        text-decoration: none !important;
+        overflow: hidden;
+        clip-path: polygon(0 0, 100% 0, 100% 65%, 92% 100%, 0 100%);
+        transition: all 0.3s ease;
+    }
+
+    .google-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        z-index: 5;
+        position: relative;
+    }
+
+    .g-logo {
+        width: 22px;
+        margin-right: 12px;
+        filter: drop-shadow(0 0 2px rgba(255,255,255,0.2));
+    }
+
+    .g-text {
+        color: #fff;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 900;
+        letter-spacing: 2px;
+    }
+
+    /* BARRA DE COLORES GOOGLE (ANIMADA) */
+    .google-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #4285F4, #EA4335, #FBBC05, #34A853);
+        box-shadow: 0 0 10px rgba(66, 133, 244, 0.5);
+        animation: spectrum-run 2s linear infinite;
+    }
+
+    /* EFECTO HOVER: EL BOTÓN SE INUNDA DE LUZ */
+    .google-tech-btn:hover {
+        border-color: #fff;
+        transform: translateY(-2px);
+    }
+
+    .google-tech-btn:hover::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: linear-gradient(45deg, rgba(66, 133, 244, 0.1), rgba(52, 168, 83, 0.1));
+        z-index: 1;
+    }
+
+    @keyframes spectrum-run {
+        0% { filter: hue-rotate(0deg); brightness(1); }
+        50% { brightness(1.5); }
+        100% { filter: hue-rotate(360deg); brightness(1); }
+    }
+</style>
+
+
+
+
+
             {% else %}
-                <form action="{% url 'account_logout' %}" method="post" class="m-0">
-                    {% csrf_token %}
-                    <button type="submit" class="logout-btn"><i class="bi bi-power"></i></button>
-                </form>
+            <form action="{% url 'logout' %}" method="post" class="m-0">
+    {% csrf_token %}
+    <button type="submit" class="logout-btn" onclick="showOttoNotification('SALIENDO DEL SISTEMA... ADIÓS OPERADOR', 'info')">
+        <i class="bi bi-power"></i>
+    </button>
+</form>
+
             {% endif %}
         </div>
     </header>
 
     <nav class="grid-responsive">
-        <a href="/vender/" class="btn-system vender"><i class="bi bi-plus-square"></i> VENDER</a>
-        <a href="/dashboard/" class="btn-system"><i class="bi bi-cpu"></i> DASHBOARD</a>
-        <a href="/perfil/" class="btn-system"><i class="bi bi-person"></i> PERSONAL</a>
-        
-        <a href="/stats/" class="btn-system"><i class="bi bi-bar-chart"></i> STATS</a>
-        
-        {% if user.is_superuser %}
-            <a href="/admin/" class="btn-system admin"><i class="bi bi-shield-lock"></i> ADMIN</a>
-        {% else %}
-            <a href="/accounts/signup/" class="btn-system"><i class="bi bi-pencil-square"></i> REGISTRO</a>
-        {% endif %}
 
-        <a href="/global/" class="btn-system"><i class="bi bi-globe"></i> GLOBAL</a>
+        
+{% if not user.is_authenticated %}
+
+
+<div class="otto-core-access">
+    <div class="access-divider"></div>
+    
+    <a href="/login/" class="access-sector login-sector">
+        <span class="sector-status">AUTH_REQ</span>
+        <span class="sector-title">iniciar sesion</span>
+    </a>
+
+
+
+    <div class="corner-light"></div>
+</div>
+
+<style>
+    .otto-core-access {
+        position: relative;
+        display: flex;
+        width: 100%;
+        height: 65px;
+        background: #080808;
+        border: 1px solid #333;
+        clip-path: polygon(0 15px, 15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+        overflow: hidden;
+    }
+
+    .access-sector {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none !important;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        z-index: 2;
+    }
+
+    .sector-status {
+        font-family: 'monospace';
+        font-size: 0.55rem;
+        letter-spacing: 3px;
+        color: #4fc3f7;
+    }
+
+ .sector-title {
+    color: #39ff14 !important; /* Verde Neón */
+    text-shadow: 0 0 10px #39ff14;
+    font-family: 'Orbitron', sans-serif;
+    position: relative;
+    overflow: hidden; /* Importante para que el barrido no se salga */
+    display: inline-block;
+}
+
+/* ESTO ES EL BARRIDO QUE SE QUITÓ */
+.sector-title::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg, 
+        transparent, 
+        rgba(57, 255, 20, 0.4), 
+        transparent
+    );
+    animation: sweep 3s infinite;
+}
+
+@keyframes sweep {
+    0% { left: -100%; }
+    50% { left: 100%; }
+    100% { left: 100%; }
+}
+
+
+    /* LADO LOGIN - CIAN */
+    .login-sector .sector-title { color: #00f3ff; text-shadow: 0 0 8px rgba(0, 243, 255, 0.3); }
+    .login-sector:hover { background: rgba(0, 243, 255, 0.1); }
+
+    /* LADO REGISTRAR - MAGENTA */
+    .signup-sector .sector-title { color: #bc13fe; text-shadow: 0 0 8px rgba(188, 19, 254, 0.3); }
+    .signup-sector:hover { background: rgba(188, 19, 254, 0.1); }
+
+    /* DIVISOR DIAGONAL CENTRAL */
+    .access-divider {
+        position: absolute;
+        left: 50%;
+        top: -10%;
+        width: 2px;
+        height: 120%;
+        background: #333;
+        transform: rotate(20deg);
+        z-index: 3;
+        box-shadow: 0 0 15px rgba(255,255,255,0.1);
+    }
+
+    /* Animación de escaneo interno */
+    .otto-core-access::after {
+        content: "";
+        position: absolute;
+        top: 0; left: -100%;
+        width: 50%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+        animation: active-scan 4s infinite;
+    }
+
+    @keyframes active-scan {
+        0% { left: -100%; }
+        50% { left: 150%; }
+        100% { left: 150%; }
+    }
+</style>
+
+
+
+{% else %}
+    <a href="{% url 'vender' %}" class="vender-premium-btn">
+    <div class="vender-content">
+        <span class="vender-status blink-fast">● nueva_venta</span>
+        <span class="vender-text">VENTA</span>
+    </div>
+    <div class="vender-scanline"></div>
+</a>
+
+<style>
+    .vender-premium-btn {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 70px;
+        background: #000;
+        text-decoration: none !important;
+        margin-top: 10px;
+        /* Corte hexagonal Tech */
+        clip-path: polygon(5% 0, 100% 0, 100% 70%, 95% 100%, 0 100%, 0 30%);
+        border: 1px solid #bc13fe;
+        overflow: hidden;
+        transition: 0.3s;
+    }
+
+    .vender-premium-btn:hover {
+        box-shadow: 0 0 25px rgba(188, 19, 254, 0.6);
+        background: rgba(188, 19, 254, 0.1);
+    }
+
+    .vender-content {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-left: 5px solid #bc13fe;
+    }
+
+    .vender-text {
+        color: #bc13fe;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 900;
+        letter-spacing: 5px;
+        text-shadow: 0 0 10px #bc13fe;
+    }
+
+    .vender-status {
+        color: #fff;
+        font-size: 0.6rem;
+        letter-spacing: 2px;
+        margin-bottom: -5px;
+    }
+
+    /* PARPADEO RÁPIDO SÚPER TECH */
+    .blink-fast {
+        animation: blink-vender 0.8s steps(2, start) infinite;
+    }
+
+    @keyframes blink-vender {
+        to { visibility: hidden; }
+    }
+
+    /* LÍNEA DE ESCANEO LÁSER */
+    .vender-scanline {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: rgba(188, 19, 254, 0.8);
+        box-shadow: 0 0 15px #bc13fe;
+        animation: scan-move 2.5s linear infinite;
+    }
+
+    @keyframes scan-move {
+        0% { top: 0; }
+        100% { top: 100%; }
+    }
+</style>
+
+    
+{% endif %}
+
+
+<a href="{% url 'dashboard' %}" class="btn-system">
+    <i class="bi bi-cpu"></i> DASHBOARD
+</a>
+
+<a href="{% url 'perfil' %}" class="btn-system">
+    <i class="bi bi-person"></i> PERSONAL
+</a>
+
+<a href="{% url 'stats' %}" class="btn-system">
+    <i class="bi bi-bar-chart"></i> STATS
+
+{% if user.is_superuser %}
+    <a href="/admin/" class="btn-system admin">
+        <i class="bi bi-shield-lock"></i> ADMIN
+    </a>
+{% endif %}
+
+<a href="{% url 'home' %}" class="btn-system">
+    <i class="bi bi-globe"></i> GLOBAL
+</a>
+
     </nav>
 
     <main style="width: 100%; padding: 15px;">
         {% block content %}{% endblock %}
     </main>
+<div class="support-wrapper">
+    <div class="support-menu" id="supportMenu">
+        <a href="mailto:ottonmq@gmail.com" class="support-item mail">
+            <i class="bi bi-envelope-at-fill"></i>
+            <span class="tooltip-tech">CORREO_SUPPORT</span>
+        </a>
+        <a href="https://wa.me/5037651585" target="_blank" class="support-item whatsapp">
+            <i class="bi bi-whatsapp"></i>
+            <span class="tooltip-tech">WHATSAPP_LINK</span>
+        </a>
+    </div>
+
+    <button class="support-main-btn" onclick="toggleSupport()">
+        <i class="bi bi-headset"></i>
+        <div class="ping-pulse"></div>
+    </button>
+</div>
+
+<style>
+    :root {
+        --tech-blue: #0066ff;
+        --tech-green: #25d366;
+        --dark-glass: rgba(15, 17, 19, 0.95);
+    }
+
+    .support-wrapper {
+        position: fixed;
+        bottom: 25px;
+        left: 25px; /* Lado inferior izquierdo como pediste */
+        z-index: 9999;
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        gap: 15px;
+    }
+
+    /* BOTÓN PRINCIPAL */
+    .support-main-btn {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        background: var(--tech-blue);
+        border: 2px solid rgba(255,255,255,0.1);
+        color: white;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        position: relative;
+        box-shadow: 0 0 15px rgba(0, 102, 255, 0.4);
+        transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .support-main-btn:hover {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    /* EFECTO PARPADEO / PULSO */
+    .ping-pulse {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 2px solid var(--tech-blue);
+        animation: pulse-ring 2s infinite;
+    }
+
+    @keyframes pulse-ring {
+        0% { transform: scale(0.8); opacity: 0.8; }
+        100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    /* MENÚ DESPLEGABLE */
+    .support-menu {
+        display: none;
+        flex-direction: column;
+        gap: 12px;
+        animation: slideUp 0.3s ease-out;
+    }
+
+    .support-item {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+        font-size: 20px;
+        position: relative;
+        border: 1px solid rgba(255,255,255,0.1);
+        transition: 0.2s;
+    }
+
+    .mail { background: #444; }
+    .whatsapp { background: var(--tech-green); }
+
+    .support-item:hover {
+        transform: translateX(10px);
+        box-shadow: 0 0 12px currentColor;
+    }
+
+    /* TOOLTIPS ESTILO C# / TECH */
+    .tooltip-tech {
+        position: absolute;
+        left: 60px;
+        background: var(--dark-glass);
+        color: var(--tech-blue);
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-family: monospace;
+        font-weight: bold;
+        white-space: nowrap;
+        border: 1px solid var(--tech-blue);
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.2s;
+    }
+
+    .support-item:hover .tooltip-tech {
+        opacity: 1;
+        left: 55px;
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<script>
+    function toggleSupport() {
+        const menu = document.getElementById('supportMenu');
+        if (menu.style.display === 'flex') {
+            menu.style.display = 'none';
+        } else {
+            menu.style.display = 'flex';
+        }
+    }
+</script>
+
+
+<div id="otto-notification-container" style="position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px;"></div>
+
+<style>
+    .otto-toast {
+        background: #16181a;
+        border-left: 4px solid var(--robot-blue, #0066ff);
+        border-top: 1px solid #2d3136;
+        border-bottom: 1px solid #2d3136;
+        border-right: 1px solid #2d3136;
+        color: white;
+        padding: 12px 20px;
+        min-width: 250px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        animation: toastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .otto-toast.error { border-left-color: #ff3333; }
+    .otto-toast.success { border-left-color: #00ff66; }
+
+    @keyframes toastIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    .toast-close {
+        cursor: pointer;
+        margin-left: 15px;
+        color: #444;
+        font-size: 14px;
+    }
+    .toast-close:hover { color: white; }
+</style>
+{% if messages %}
+<script>
+    window.addEventListener('load', function() {
+        {% for message in messages %}
+            showOttoNotification("{{ message }}", "{{ message.tags }}");
+        {% endfor %}
+    });
+</script>
+{% endif %}
+
+
+<script>
+    // FUNCIÓN PARA DISPARAR NOTIFICACIONES DESDE CUALQUIER LADO
+    function showOttoNotification(message, type = 'info') {
+        const container = document.getElementById('otto-notification-container');
+        const toast = document.createElement('div');
+        toast.className = `otto-toast ${type}`;
+        
+        toast.innerHTML = `
+            <div>
+                <strong style="color: #666; font-size: 9px; display: block;">SISTEMA_MSG:</strong>
+                <span>${message.toUpperCase()}</span>
+            </div>
+            <span class="toast-close" onclick="this.parentElement.remove()">×</span>
+        `;
+
+        container.appendChild(toast);
+
+        // Se auto-elimina después de 5 segundos
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100%)';
+            toast.style.transition = '0.5s';
+            setTimeout(() => toast.remove(), 500);
+        }, 5000);
+    }
+</script>
 
 </body>
 </html>
+
+
+
